@@ -16,7 +16,6 @@ export interface Tuition {
   tutorEmail: string;
   approvalStatus: ApprovalStatus;
   isActive: boolean;
-  createdAt?: string | Date;
 }
 
-export type CreateTuitionInput = Omit<Tuition, "_id" | "createdAt">;
+export type CreateTuitionInput = Omit<Tuition, "_id">;

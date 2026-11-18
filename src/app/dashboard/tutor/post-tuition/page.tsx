@@ -48,10 +48,6 @@ export default function PostTuitionPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Image size should be less than 2MB");
-      return;
-    }
 
     try {
       setIsUploadingImage(true);
@@ -136,6 +132,7 @@ export default function PostTuitionPage() {
         tutorEmail: user.email || "",
         approvalStatus: "pending",
         isActive: true,
+
       };
 
       const result = await createTuition(payload);
@@ -385,7 +382,7 @@ export default function PostTuitionPage() {
                       />
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      PNG, JPG, or WEBP up to 2MB (Uploaded securely via ImgBB)
+                      PNG, JPG, or WEBP (Uploaded securely via ImgBB)
                     </p>
                   </div>
                 )}

@@ -1,29 +1,12 @@
-import { authClient } from "../auth-client"
+import { getTokenClient } from "./getTokenClient";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
-
-
-export const getToken = async() => {
-    const {data} = await  authClient.token();
-     const token = data?.token
-     return token;
-}
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
-export const authFetch =async (api: string) => {
-    const token = await getToken();
-    const res = await fetch(api, {
-          headers:{
-            authorization: `Bearer ${token}`
-        }
-    })
-    return res;
-
-}
 
 
 export const protectedMutation = async (api: string, method: string, data?: unknown) =>{
-    const token = await getToken()
+    const token = await getTokenClient()
      const res = await fetch(api,{
 
          method: method,
@@ -35,3 +18,6 @@ export const protectedMutation = async (api: string, method: string, data?: unkn
      })
      return res;
 }
+
+
+
