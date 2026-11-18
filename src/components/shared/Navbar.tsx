@@ -155,33 +155,41 @@ export function Navbar() {
               </Link>
             </div>
           ) : (
-            /* Authenticated State: Avatar, Name & Role Badge, Dropdown */
+            /* Authenticated State: Avatar, Name on right & Role underneath */
             <div className="flex items-center gap-3">
-              {/* Role Badge */}
-              <div className="flex items-center gap-1.5">
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize border ${getRoleBadgeStyle(
-                    user.role as string
-                  )}`}
-                >
-                  {user.role || "User"}
-                </span>
-                {user.plan === "pro" && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-2xs">
-                    <Sparkles className="w-2.5 h-2.5" /> PRO
-                  </span>
-                )}
-              </div>
-
               {/* User Dropdown Menu using Shadcn UI */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="rounded-full ring-2 ring-transparent focus:ring-amber-500 outline-none cursor-pointer">
-                  <Avatar className="h-9 w-9 border border-slate-200 dark:border-slate-700">
+                <DropdownMenuTrigger className="flex items-center gap-2.5 p-1 px-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 ring-2 ring-transparent border hover:border-amber-500 outline-none cursor-pointer transition-colors">
+                  {/* Avatar Image */}
+                  <Avatar className="h-9 w-9 border border-slate-200 dark:border-slate-700 shrink-0">
                     <AvatarImage src={user.image || ""} alt={user.name} />
                     <AvatarFallback className="bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 font-bold text-xs">
                       {user.name ? user.name.slice(0, 2).toUpperCase() : "U"}
                     </AvatarFallback>
                   </Avatar>
+
+                  {/* Name on Right, Role underneath */}
+                  <div className="flex flex-col text-left min-w-0">
+                    <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight truncate max-w-[120px]">
+                      {user.name || "User"}
+                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span
+                        className={`px-1.5 py-0.2 rounded-md text-[10px] font-semibold capitalize border ${getRoleBadgeStyle(
+                          user.role as string
+                        )}`}
+                      >
+                        {user.role || "User"}
+                      </span>
+                      {user.plan === "pro" && (
+                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-md text-[9px] font-bold bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-2xs">
+                          <Sparkles className="w-2 h-2" /> PRO
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 p-1.5">
                   <DropdownMenuLabel className="flex flex-col gap-0.5 px-2 py-1.5">
@@ -279,30 +287,32 @@ export function Navbar() {
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <div className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.image || ""} alt={user.name} />
-                      <AvatarFallback className="bg-amber-100 text-amber-800 text-xs font-bold">
-                        {user.name ? user.name.slice(0, 2).toUpperCase() : "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
-                        {user.name}
+                <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                  <Avatar className="h-9 w-9 border border-slate-200 dark:border-slate-700 shrink-0">
+                    <AvatarImage src={user.image || ""} alt={user.name} />
+                    <AvatarFallback className="bg-amber-100 text-amber-800 text-xs font-bold">
+                      {user.name ? user.name.slice(0, 2).toUpperCase() : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col min-w-0 flex-1">
+                    <span className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                      {user.name}
+                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span
+                        className={`px-1.5 py-0.2 rounded-md text-[10px] font-semibold capitalize border ${getRoleBadgeStyle(
+                          user.role as string
+                        )}`}
+                      >
+                        {user.role}
                       </span>
-                      <span className="text-[11px] text-slate-500 truncate max-w-[150px]">
-                        {user.email}
-                      </span>
+                      {user.plan === "pro" && (
+                        <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-md text-[9px] font-bold bg-linear-to-r from-amber-500 to-orange-500 text-white">
+                          <Sparkles className="w-2 h-2" /> PRO
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-[11px] font-semibold capitalize border ${getRoleBadgeStyle(
-                      user.role as string
-                    )}`}
-                  >
-                    {user.role}
-                  </span>
                 </div>
                 <div className="flex flex-col gap-1.5 pt-1">
                   <Link

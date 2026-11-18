@@ -1,14 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { headers } from "next/headers";
-import { Home } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
@@ -77,12 +75,9 @@ export async function DashboardSidebar() {
         <DashboardMenu role={role} />
       </SidebarContent>
 
-      {/* Footer Navigation: Home & Sign Out */}
-      <SidebarFooter className="border-t border-sidebar-border p-2 space-y-1">
+      {/* Footer Navigation: Sign Out */}
+      <SidebarFooter className="border-t border-sidebar-border p-2">
         <SidebarMenu>
-          <SidebarMenuItem>
-          
-          </SidebarMenuItem>
           <SidebarMenuItem>
             <SignOutButton variant="sidebar" />
           </SidebarMenuItem>
