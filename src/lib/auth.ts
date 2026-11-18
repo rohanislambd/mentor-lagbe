@@ -9,7 +9,35 @@ export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
   }),
-   emailAndPassword: { 
-    enabled: true, 
-  }, 
+  emailAndPassword: {
+    enabled: true,
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: ["student", "tutor", "admin"],
+        required: false,
+        defaultValue: "student",
+        input: true, // Allows 'student' or 'tutor' selection during sign up
+      },
+      plan: {
+        type: ["free", "pro"],
+        required: false,
+        defaultValue: "free",
+        input: false, // Default to 'free', upgraded via Stripe payment
+      },
+      phone: {
+        type: "string",
+        required: false,
+        defaultValue: "",
+        input: true,
+      },
+      bio: {
+        type: "string",
+        required: false,
+        defaultValue: "",
+        input: true,
+      },
+    },
+  },
 });
