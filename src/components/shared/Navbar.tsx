@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useSyncExternalStore } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Moon,
-  Sun,
   Menu,
   X,
   LayoutDashboard,
@@ -24,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import toast from "react-hot-toast";
 
 const NAV_LINKS = [
@@ -66,38 +65,10 @@ export function Navbar() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  // Subscribe to changes on document.documentElement class attribute
-  const isDark = useSyncExternalStore(
-    (callback) => {
-      const observer = new MutationObserver(callback);
-      observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-      return () => observer.disconnect();
-    },
-    () => document.documentElement.classList.contains("dark"),
-    () => false
-  );
-
-  const toggleTheme = () => {
-    const willBeDark = !document.documentElement.classList.contains("dark");
-    if (willBeDark) {
-      document.documentElement.classList.add("dark");
-      try {
-        localStorage.setItem("theme", "dark");
-      } catch {
-        // Ignore storage errors
-      }
-    } else {
-      document.documentElement.classList.remove("dark");
-      try {
-        localStorage.setItem("theme", "light");
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  };
+  // Don't render public navbar on dashboard routes (dashboard has its own layout)
+  if (pathname?.startsWith("/dashboard")) {
+    return null;
+  }
 
   const handleSignOut = async () => {
     try {
@@ -164,19 +135,8 @@ export function Navbar() {
 
         {/* Right Section: Theme Toggle + Auth State */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Theme Toggle Button */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors cursor-pointer"
-          >
-            {isDark ? (
-              <Sun className="h-4.5 w-4.5 text-amber-500" />
-            ) : (
-              <Moon className="h-4.5 w-4.5" />
-            )}
-          </button>
+          {/* Reusable Theme Toggle */}
+          <ThemeToggle />
 
           {/* Unauthenticated State: Show Sign In & Sign Up */}
           {!user ? (
@@ -264,14 +224,7 @@ export function Navbar() {
 
         {/* Mobile Hamburger Toggle */}
         <div className="flex md:hidden items-center gap-2">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200"
-          >
-            {isDark ? <Sun className="h-4.5 w-4.5 text-amber-500" /> : <Moon className="h-4.5 w-4.5" />}
-          </button>
+          <ThemeToggle />
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
