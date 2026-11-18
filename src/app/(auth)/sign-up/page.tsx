@@ -19,6 +19,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 type Role = "student" | "tutor";
 
@@ -73,18 +74,21 @@ export default function SignUpPage() {
 
       if (uploadedUrl) {
         setImageUrl(uploadedUrl);
-        console.log("Uploaded Image URL:", uploadedUrl);
+        toast.success("Profile photo uploaded successfully!");
       } else {
+        const errMsg = result?.error?.message || "Failed to upload image to ImgBB";
         setErrors((prev) => ({
           ...prev,
-          image: result?.error?.message || "Failed to upload image to ImgBB",
+          image: errMsg,
         }));
+        toast.error(errMsg);
       }
     } catch {
       setErrors((prev) => ({
         ...prev,
         image: "Error connecting to ImgBB API",
       }));
+      toast.error("Error connecting to ImgBB API");
     } finally {
       setIsUploadingImage(false);
     }
@@ -93,6 +97,7 @@ export default function SignUpPage() {
   const handleRemoveImage = () => {
     setImageUrl("");
     setErrors((prev) => ({ ...prev, image: undefined }));
+    toast.success("Profile photo removed");
   };
 
   // Client-side form validation
@@ -138,17 +143,20 @@ export default function SignUpPage() {
       });
 
       if (res?.error) {
-        setErrors({ general: res.error.message || "Failed to create account" });
+        const errorMsg = res.error.message || "Failed to create account";
+        setErrors({ general: errorMsg });
+        toast.error(errorMsg);
         setIsLoading(false);
         return;
       }
 
-      // Successful registration - redirect to role dashboard
-      if (role === "student") {
-        router.push("/dashboard/student");
-      } else {
-        router.push("/dashboard/tutor");
-      }
+      router.push("/")
+      toast.success(
+        `Welcome to MentorLagbe, ${name.trim()}! Account created successfully as a ${
+          role === "student" ? "Student" : "Tutor"
+        }.`
+      );
+
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "An unexpected error occurred";
