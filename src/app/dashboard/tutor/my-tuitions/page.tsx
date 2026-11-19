@@ -9,10 +9,10 @@ import {
   MapPin,
   Calendar,
   BookOpen,
-  Edit,
   Trash2,
 } from "lucide-react";
 import { TuitionDetailsModal } from "@/components/dashboard/tutor/TuitionDetailsModal";
+import { TuitionEditModal } from "@/components/dashboard/tutor/TuitionEditModal";
 import { getMyTuitions } from "@/lib/api/tuitons.";
 import { Tuition } from "../../../../../teype/tuitiontype";
 import { Badge } from "@/components/ui/badge";
@@ -158,7 +158,7 @@ const MyTuitionsPage = async () => {
                 <TableHead>Active Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-              ending{" "}
+            
             </TableHeader>
             <TableBody>
               {tuitions.map((tuition) => (
@@ -248,14 +248,7 @@ const MyTuitionsPage = async () => {
                   <TableCell className="align-top py-4 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <TuitionDetailsModal tuitionId={tuition._id || ""} />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Edit Tuition"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-amber-600"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
+                      <TuitionEditModal tuition={tuition} />
                       <Button
                         variant="ghost"
                         size="sm"

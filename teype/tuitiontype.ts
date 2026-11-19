@@ -19,3 +19,4 @@ export interface Tuition {
 }
 
 export type CreateTuitionInput = Omit<Tuition, "_id">;
+export type UpdateTuitionInput = Partial<CreateTuitionInput>;
