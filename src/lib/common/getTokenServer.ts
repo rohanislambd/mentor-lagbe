@@ -1,6 +1,5 @@
 import { headers } from "next/headers";
 import { auth } from "../auth";
-import { authClient } from "../auth-client";
 
 export const getTokenServer = async () => {
   const data = await auth.api.getToken({
