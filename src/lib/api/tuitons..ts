@@ -1,13 +1,12 @@
-import { getTokenServer } from "../common/getTokenServer";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 
 export const getMyTuitions = async () => {
   try {
+    const { getTokenServer } = await import("../common/getTokenServer");
     const token = await getTokenServer();
+    const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
 
-    const res = await fetch(`${BASE_URL}/tuitions/my-tuitions`, {
+    const res = await fetch(`${baseUrl}/tuitions/my-tuitions`, {
       headers: {
         authorization: `Bearer ${token}`,
       },
@@ -26,3 +25,22 @@ export const getMyTuitions = async () => {
   }
 };
 
+// Single Tuition Details
+export const getTuitonDetailById = async (id: string) => {
+  try {
+    const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
+    const res = await fetch(`${baseUrl}/tuitions/${id}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      console.error("Failed to fetch tuition:", res.status);
+      return null;
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Get Tuition Detail Error:", error);
+    return null;
+  }
+};

@@ -11,8 +11,8 @@ import {
   BookOpen,
   Edit,
   Trash2,
-  Eye,
 } from "lucide-react";
+import { TuitionDetailsModal } from "@/components/dashboard/tutor/TuitionDetailsModal";
 import { getMyTuitions } from "@/lib/api/tuitons.";
 import { Tuition } from "../../../../../teype/tuitiontype";
 import { Badge } from "@/components/ui/badge";
@@ -244,17 +244,10 @@ const MyTuitionsPage = async () => {
                     </span>
                   </TableCell>
 
-                  {/* Action Buttons Placeholders */}
+                  {/* Action Buttons: View Details Modal, Edit, Delete */}
                   <TableCell className="align-top py-4 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="View Details"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
+                      <TuitionDetailsModal tuitionId={tuition._id || ""} />
                       <Button
                         variant="ghost"
                         size="sm"
