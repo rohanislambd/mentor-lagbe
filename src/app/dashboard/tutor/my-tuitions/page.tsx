@@ -9,15 +9,14 @@ import {
   MapPin,
   Calendar,
   BookOpen,
-  Trash2,
 } from "lucide-react";
 import { TuitionDetailsModal } from "@/components/dashboard/tutor/TuitionDetailsModal";
 import { TuitionEditModal } from "@/components/dashboard/tutor/TuitionEditModal";
 import { TuitionStatusToggle } from "@/components/dashboard/tutor/TuitionStatusToggle";
+import { TuitionDeleteDialog } from "@/components/dashboard/tutor/TuitionDeleteDialog";
 import { getMyTuitions } from "@/lib/api/tuitons.";
 import { Tuition } from "../../../../../teype/tuitiontype";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -74,6 +73,8 @@ const MyTuitionsPage = async () => {
       : [];
 
   const totalCount = tuitions.length;
+  const activeCount = tuitions.filter((t) => t.isActive).length;
+  const closedCount = tuitions.filter((t) => !t.isActive).length;
   const approvedCount = tuitions.filter(
     (t) => t.approvalStatus === "approved",
   ).length;
@@ -105,17 +106,28 @@ const MyTuitionsPage = async () => {
       </div>
 
       {/* Summary Stats Badges */}
-      <div className="flex flex-wrap items-center gap-3 text-xs">
-        <span className="px-3 py-1.5 rounded-lg bg-card border border-border font-medium">
-          Total Tuitions:{" "}
-          <strong className="text-foreground">{totalCount}</strong>
+      <div className="flex flex-wrap items-center gap-2.5 text-xs">
+        <span className="px-3 py-1.5 rounded-lg bg-card border border-border font-medium text-foreground shadow-2xs">
+          Total Tuitions: <strong className="text-foreground">{totalCount}</strong>
         </span>
-        <span className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium">
+        <span className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 shadow-2xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          Active: <strong>{activeCount}</strong>
+        </span>
+        <span className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 shadow-2xs">
+          <CheckCircle2 className="w-3.5 h-3.5" />
           Approved: <strong>{approvedCount}</strong>
         </span>
-        <span className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-medium">
+        <span className="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1.5 shadow-2xs">
+          <Clock className="w-3.5 h-3.5" />
           Pending: <strong>{pendingCount}</strong>
         </span>
+        {closedCount > 0 && (
+          <span className="px-3 py-1.5 rounded-lg bg-muted/60 border border-border text-muted-foreground font-medium flex items-center gap-1.5 shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-slate-400" />
+            Closed: <strong>{closedCount}</strong>
+          </span>
+        )}
       </div>
 
       {/* Main Table / Empty State */}
@@ -155,8 +167,13 @@ const MyTuitionsPage = async () => {
                 </TableHead>
                 <TableHead>Class & Subjects</TableHead>
                 <TableHead>Fee & Schedule</TableHead>
-                <TableHead>Admin Approval</TableHead>
-                <TableHead>Active Status</TableHead>
+                <TableHead>Approval</TableHead>
+                <TableHead>
+                  Active Status{" "}
+                  <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    {activeCount} Active
+                  </span>
+                </TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             
@@ -245,14 +262,10 @@ const MyTuitionsPage = async () => {
                     <div className="flex items-center justify-end gap-1.5">
                       <TuitionDetailsModal tuitionId={tuition._id || ""} />
                       <TuitionEditModal tuition={tuition} />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Delete Tuition"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-rose-600"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <TuitionDeleteDialog
+                        tuitionId={tuition._id || ""}
+                        tuitionTitle={tuition.title}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

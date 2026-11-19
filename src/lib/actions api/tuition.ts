@@ -17,3 +17,10 @@ export const updateTuitionDetails = async (
   const res = await protectedMutation(api, "PATCH", data);
   return res.json();
 };
+
+export const deleteTuition = async (id: string) => {
+  const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
+  const api = `${baseUrl}/tuitions/${id}`;
+  const res = await protectedMutation(api, "DELETE");
+  return res.json();
+};
