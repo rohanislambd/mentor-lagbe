@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { TuitionDetailsModal } from "@/components/dashboard/tutor/TuitionDetailsModal";
 import { TuitionEditModal } from "@/components/dashboard/tutor/TuitionEditModal";
+import { TuitionStatusToggle } from "@/components/dashboard/tutor/TuitionStatusToggle";
 import { getMyTuitions } from "@/lib/api/tuitons.";
 import { Tuition } from "../../../../../teype/tuitiontype";
 import { Badge } from "@/components/ui/badge";
@@ -231,17 +232,12 @@ const MyTuitionsPage = async () => {
                     {renderApprovalBadge(tuition.approvalStatus)}
                   </TableCell>
 
-                  {/* Active / Closed Status */}
+                  {/* Active / Closed Status Toggle */}
                   <TableCell className="align-top py-4 px-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
-                        tuition.isActive
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                          : "bg-muted text-muted-foreground border-border"
-                      }`}
-                    >
-                      {tuition.isActive ? "Active" : "Closed"}
-                    </span>
+                    <TuitionStatusToggle
+                      tuitionId={tuition._id || ""}
+                      initialIsActive={tuition.isActive}
+                    />
                   </TableCell>
 
                   {/* Action Buttons: View Details Modal, Edit, Delete */}
