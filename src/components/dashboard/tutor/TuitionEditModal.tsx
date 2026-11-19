@@ -13,6 +13,7 @@ import {
 import toast from "react-hot-toast";
 import { Tuition, TuitionMode, UpdateTuitionInput } from "../../../../teype/tuitiontype";
 import { updateTuitionDetails } from "@/lib/actions api/tuition";
+import { SUBJECT_OPTIONS, CLASS_LEVEL_OPTIONS, DAYS_PER_WEEK_OPTIONS } from "@/app/dashboard/tutor/post-tuition/page";
 import {
   Dialog,
   DialogContent,
@@ -208,27 +209,47 @@ export function TuitionEditModal({ tuition }: TuitionEditModalProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor="edit-subject" className="text-xs font-semibold">
-                Subject(s) <span className="text-rose-500">*</span>
+                Subject <span className="text-rose-500">*</span>
               </Label>
-              <Input
+              <select
                 id="edit-subject"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 required
-                className="h-9 text-sm"
-              />
+                className="w-full h-9 px-3 py-1.5 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+              >
+                <option value="" disabled>Select Subject</option>
+                {subject && !SUBJECT_OPTIONS.includes(subject) && (
+                  <option value={subject}>{subject}</option>
+                )}
+                {SUBJECT_OPTIONS.map((sub) => (
+                  <option key={sub} value={sub}>
+                    {sub}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="edit-classLevel" className="text-xs font-semibold">
                 Class Level <span className="text-rose-500">*</span>
               </Label>
-              <Input
+              <select
                 id="edit-classLevel"
                 value={classLevel}
                 onChange={(e) => setClassLevel(e.target.value)}
                 required
-                className="h-9 text-sm"
-              />
+                className="w-full h-9 px-3 py-1.5 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+              >
+                <option value="" disabled>Select Class Level</option>
+                {classLevel && !CLASS_LEVEL_OPTIONS.includes(classLevel) && (
+                  <option value={classLevel}>{classLevel}</option>
+                )}
+                {CLASS_LEVEL_OPTIONS.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {lvl}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -297,15 +318,25 @@ export function TuitionEditModal({ tuition }: TuitionEditModalProps) {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="edit-days" className="text-xs font-semibold">
-                Schedule <span className="text-rose-500">*</span>
+                Schedule / Days Per Week <span className="text-rose-500">*</span>
               </Label>
-              <Input
+              <select
                 id="edit-days"
                 value={daysPerWeek}
                 onChange={(e) => setDaysPerWeek(e.target.value)}
                 required
-                className="h-9 text-sm"
-              />
+                className="w-full h-9 px-3 py-1.5 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+              >
+                <option value="" disabled>Select Days Per Week</option>
+                {daysPerWeek && !DAYS_PER_WEEK_OPTIONS.includes(daysPerWeek) && (
+                  <option value={daysPerWeek}>{daysPerWeek}</option>
+                )}
+                {DAYS_PER_WEEK_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

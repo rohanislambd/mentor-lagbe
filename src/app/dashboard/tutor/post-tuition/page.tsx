@@ -21,6 +21,33 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
+export const SUBJECT_OPTIONS = [
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "English",
+  "Programming",
+  "Accounting",
+  "IELTS",
+];
+
+export const CLASS_LEVEL_OPTIONS = [
+  "Class 1-5",
+  "Class 6-8",
+  "Class 9-10",
+  "HSC / Class 11-12",
+  "O-Level / IGCSE",
+  "A-Level",
+  "University / Skill",
+];
+
+export const DAYS_PER_WEEK_OPTIONS = [
+  "3 Days/Week",
+  "5 Days/Week",
+  "6 Days/Week",
+];
+
 export default function PostTuitionPage() {
   const router = useRouter();
   const { data: session } = authClient.useSession();
@@ -226,30 +253,46 @@ export default function PostTuitionPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="subject" className="text-sm font-semibold">
-                  Subject(s) <span className="text-rose-500">*</span>
+                  Subject <span className="text-rose-500">*</span>
                 </Label>
-                <Input
+                <select
                   id="subject"
-                  placeholder="e.g. Physics, Chemistry, Math"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   required
-                  className="h-10"
-                />
+                  className="w-full h-10 px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+                >
+                  <option value="" disabled>
+                    Select Subject
+                  </option>
+                  {SUBJECT_OPTIONS.map((sub) => (
+                    <option key={sub} value={sub}>
+                      {sub}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="classLevel" className="text-sm font-semibold">
                   Class / Grade Level <span className="text-rose-500">*</span>
                 </Label>
-                <Input
+                <select
                   id="classLevel"
-                  placeholder="e.g. Class 9-10, HSC, Admission"
                   value={classLevel}
                   onChange={(e) => setClassLevel(e.target.value)}
                   required
-                  className="h-10"
-                />
+                  className="w-full h-10 px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+                >
+                  <option value="" disabled>
+                    Select Class Level
+                  </option>
+                  {CLASS_LEVEL_OPTIONS.map((lvl) => (
+                    <option key={lvl} value={lvl}>
+                      {lvl}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -322,14 +365,22 @@ export default function PostTuitionPage() {
                 <Label htmlFor="daysPerWeek" className="text-sm font-semibold">
                   Days Per Week <span className="text-rose-500">*</span>
                 </Label>
-                <Input
+                <select
                   id="daysPerWeek"
-                  placeholder="e.g. 3 Days/Week"
                   value={daysPerWeek}
                   onChange={(e) => setDaysPerWeek(e.target.value)}
                   required
-                  className="h-10"
-                />
+                  className="w-full h-10 px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-colors cursor-pointer"
+                >
+                  <option value="" disabled>
+                    Select Days Per Week
+                  </option>
+                  {DAYS_PER_WEEK_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
