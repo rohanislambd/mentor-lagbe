@@ -27,7 +27,7 @@ import toast from "react-hot-toast";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/tuitions", label: "Browse Tuitions" },
+  { href: "/browse-tuitions", label: "Browse Tuitions" },
   { href: "/pricing", label: "Pricing / Pro Plans" },
 ];
 

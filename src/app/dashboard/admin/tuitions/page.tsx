@@ -18,7 +18,7 @@ const TuitionsApprovalsPage = async () => {
       : [];
 
   return (
-    <div className="max-w-7xl mx-auto pb-12">
+    <div className="max-w-8xl mx-auto pb-12">
       <AdminTuitionModerationTable initialTuitions={tuitions} />
     </div>
   );

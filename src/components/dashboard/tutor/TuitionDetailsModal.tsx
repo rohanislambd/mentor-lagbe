@@ -31,9 +31,13 @@ import { Button } from "@/components/ui/button";
 
 interface TuitionDetailsModalProps {
   tuitionId: string;
+  trigger?: React.ReactNode;
 }
 
-export function TuitionDetailsModal({ tuitionId }: TuitionDetailsModalProps) {
+export function TuitionDetailsModal({
+  tuitionId,
+  trigger,
+}: TuitionDetailsModalProps) {
   const [open, setOpen] = useState(false);
   const [tuition, setTuition] = useState<Tuition | null>(null);
   const [loading, setLoading] = useState(false);
@@ -93,18 +97,24 @@ export function TuitionDetailsModal({ tuitionId }: TuitionDetailsModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="sm"
-            title="View Details"
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer rounded-lg"
-          />
-        }
-      >
-        <Eye className="w-4 h-4" />
-      </DialogTrigger>
+      {trigger ? (
+        <DialogTrigger render={<span className="inline-flex cursor-pointer" />}>
+          {trigger}
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="sm"
+              title="View Details"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer rounded-lg"
+            />
+          }
+        >
+          <Eye className="w-4 h-4" />
+        </DialogTrigger>
+      )}
 
       <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto p-5">
         <DialogHeader className="pb-2 border-b border-border/60">

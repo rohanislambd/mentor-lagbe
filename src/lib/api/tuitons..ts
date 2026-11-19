@@ -80,3 +80,23 @@ export const getAllTuitions = async () => {
     return [];
   }
 };
+
+
+// browse tuitions 
+export const getBrowseTuitions = async (query = "") => {
+  try {
+    const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
+    const res = await fetch(`${baseUrl}/tuitions?${query}`, {
+      cache: "no-store",
+    });
+    
+    if (!res.ok) {
+      console.error("Failed to fetch browse tuitions:", res.status);
+      return [];
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Get Browse Tuitions Error:", error);
+    return [];
+  }
+};
