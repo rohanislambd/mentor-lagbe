@@ -30,3 +30,7 @@ export const getStudentApplications = async (): Promise<TuitionApplication[]> =>
     return [];
   }
 };
+
+export const getTutorApplicants = async (): Promise<TuitionApplication[]> => {
+  return getStudentApplications();
+};

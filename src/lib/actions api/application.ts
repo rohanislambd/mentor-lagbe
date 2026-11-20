@@ -24,3 +24,17 @@ export const deleteApplication = async (id: string) => {
   }
   return result;
 };
+
+export const updateApplicationStatus = async (
+  id: string,
+  status: "accepted" | "rejected"
+) => {
+  const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
+  const api = `${baseUrl}/applications/${id}`;
+  const res = await protectedMutation(api, "PATCH", { status });
+  const result = await res.json();
+  if (!res.ok) {
+    throw new Error(result?.message || result?.error || "Failed to update application status");
+  }
+  return result;
+};
