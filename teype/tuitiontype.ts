@@ -29,6 +29,7 @@ export interface TuitionApplication {
   tuitionTitle: string;
   subject: string;
   monthlyFee: number;
+  tutorName?: string;
   tutorEmail: string;
   studentName: string;
   studentEmail: string;
@@ -36,6 +37,8 @@ export interface TuitionApplication {
   preferredSchedule: string;
   studentNote?: string;
   status: ApplicationStatus;
+  appliedAt?: string | Date;
+  appiedAt?: string | Date;
   createdAt?: string;
   updatedAt?: string;
 }
