@@ -209,7 +209,7 @@ export function Navbar() {
                     <span>Dashboard</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push("/dashboard/profile")}
+                    onClick={() => router.push(`/dashboard/${user.role}/profile`)}
                     className="flex items-center gap-2 cursor-pointer w-full py-1.5 px-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <UserCircle className="w-4 h-4 text-slate-500" />

@@ -29,19 +29,19 @@ const menuItemsByRole = {
     { name: "User Management", url: "/dashboard/admin/users", icon: Users },
     { name: "Tuition Approvals", url: "/dashboard/admin/tuitions", icon: CheckSquare },
     { name: "Transactions", url: "/dashboard/admin/transactions", icon: CreditCard },
-    { name: "Update Profile", url: "/dashboard/profile", icon: UserCircle },
+    { name: "Update Profile", url: "/dashboard/admin/profile", icon: UserCircle },
   ],
   tutor: [
     { name: "Overview", url: "/dashboard/tutor", icon: LayoutDashboard },
     { name: "Post a Tuition", url: "/dashboard/tutor/post-tuition", icon: PlusCircle },
     { name: "My Tuitions", url: "/dashboard/tutor/my-tuitions", icon: BookOpen },
     { name: "Manage Applicants", url: "/dashboard/tutor/applicants", icon: UserCheck },
-    { name: "Update Profile", url: "/dashboard/profile", icon: UserCircle },
+    { name: "Update Profile", url: "/dashboard/tutor/profile", icon: UserCircle },
   ],
   student: [
     { name: "Overview", url: "/dashboard/student", icon: LayoutDashboard },
     { name: "My Applications", url: "/dashboard/student/my-applications", icon: FileText },
-    { name: "Update Profile", url: "/dashboard/profile", icon: UserCircle },
+    { name: "Update Profile", url: "/dashboard/student/profile", icon: UserCircle },
   ],
 };
 
