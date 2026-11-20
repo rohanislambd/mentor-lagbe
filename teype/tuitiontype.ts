@@ -44,3 +44,18 @@ export interface TuitionApplication {
 }
 
 export type CreateApplicationInput = Omit<TuitionApplication, "_id" | "createdAt" | "updatedAt">;
+
+export type UserRole = "student" | "tutor" | "admin";
+
+export interface AppUser {
+  _id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  image?: string;
+  phone?: string;
+  bio?: string;
+  plan?: "free" | "pro";
+  emailVerified?: boolean;
+  createdAt?: string | Date;
+}
