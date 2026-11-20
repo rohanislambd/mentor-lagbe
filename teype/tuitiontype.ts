@@ -20,3 +20,24 @@ export interface Tuition {
 
 export type CreateTuitionInput = Omit<Tuition, "_id">;
 export type UpdateTuitionInput = Partial<CreateTuitionInput>;
+
+export type ApplicationStatus = "pending" | "accepted" | "rejected";
+
+export interface TuitionApplication {
+  _id?: string;
+  tuitionId: string;
+  tuitionTitle: string;
+  subject: string;
+  monthlyFee: number;
+  tutorEmail: string;
+  studentName: string;
+  studentEmail: string;
+  studentPhone: string;
+  preferredSchedule: string;
+  studentNote?: string;
+  status: ApplicationStatus;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export type CreateApplicationInput = Omit<TuitionApplication, "_id" | "createdAt" | "updatedAt">;
