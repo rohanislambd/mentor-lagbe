@@ -251,6 +251,26 @@ export function ApplyTuitionModal({ tuition }: ApplyTuitionModalProps) {
     );
   }
 
+  // Role-Restricted Application Flow: If a Tutor or Admin visits the details page, disable with a notice
+  if (user && userRole !== "student") {
+    const isTutor = userRole === "tutor";
+    return (
+      <div className="space-y-2">
+        <Button
+          disabled
+          size="lg"
+          className="w-full bg-muted text-muted-foreground border border-border/80 font-bold text-sm h-12 rounded-xl cursor-not-allowed opacity-80 flex items-center justify-center gap-2"
+        >
+          <AlertCircle className="w-4 h-4 text-amber-500" />
+          <span>Apply for Tuition (Students Only)</span>
+        </Button>
+        <p className="text-[11px] text-center text-muted-foreground leading-relaxed px-1">
+          You are currently logged in as {isTutor ? "a Tutor" : "an Admin"}. Only registered students are eligible to apply for tuition posts.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
