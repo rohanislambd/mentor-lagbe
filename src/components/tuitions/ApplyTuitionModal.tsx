@@ -279,13 +279,13 @@ export function ApplyTuitionModal({ tuition }: ApplyTuitionModalProps) {
             </div>
             <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
               <Link
-                href="/login"
+                href="/sign-in"
                 className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors"
               >
                 Log In as Student
               </Link>
               <Link
-                href="/register"
+                href="/sign-up"
                 className="px-5 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-semibold border border-input transition-colors"
               >
                 Create Account
