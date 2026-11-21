@@ -22,7 +22,6 @@ export const metadata = {
 
 export default async function AdminOverviewPage() {
   const stats = await getAdminStats();
-  console.log(stats);
   const totalUsers = Number(stats?.totalUsers ?? 0);
   const totalTutors = Number(stats?.totalTutors ?? 0);
   const totalStudents = Number(stats?.totalStudents ?? 0);
