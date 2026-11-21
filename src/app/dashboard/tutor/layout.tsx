@@ -1,0 +1,27 @@
+import React from "react";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+
+export default async function TutorLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect("/sign-in?callbackUrl=/dashboard/tutor");
+  }
+
+  const role = session.user.role;
+
+  // Strict Isolation: Tutor dashboard is ONLY accessible to tutors
+  if (role !== "tutor") {
+    redirect("/unauthorized");
+  }
+
+  return <>{children}</>;
+}
