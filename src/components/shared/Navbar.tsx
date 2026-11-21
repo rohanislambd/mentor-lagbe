@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { getCurrentUserProfile } from "@/lib/actions api/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -64,6 +65,31 @@ export function Navbar() {
 
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  const [profilePlan, setProfilePlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+
+    let isMounted = true;
+    const fetchProfile = async () => {
+      try {
+        const data = await getCurrentUserProfile();
+        if (isMounted && data?.plan) {
+          setProfilePlan(data.plan);
+        }
+      } catch {
+        // Fallback to session
+      }
+    };
+
+    fetchProfile();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  const isPro = (user as { plan?: string })?.plan === "pro" || profilePlan === "pro";
 
   // Don't render public navbar on dashboard routes (dashboard has its own layout)
   if (pathname?.startsWith("/dashboard")) {
@@ -181,7 +207,7 @@ export function Navbar() {
                       >
                         {user.role || "User"}
                       </span>
-                      {user.plan === "pro" && (
+                      {isPro && (
                         <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-md text-[9px] font-bold bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-2xs">
                           <Sparkles className="w-2 h-2" /> PRO
                         </span>
@@ -306,7 +332,7 @@ export function Navbar() {
                       >
                         {user.role}
                       </span>
-                      {user.plan === "pro" && (
+                      {isPro && (
                         <span className="inline-flex items-center gap-0.5 px-1 py-0.2 rounded-md text-[9px] font-bold bg-linear-to-r from-amber-500 to-orange-500 text-white">
                           <Sparkles className="w-2 h-2" /> PRO
                         </span>
