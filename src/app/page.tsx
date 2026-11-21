@@ -1,5 +1,6 @@
 import React from "react";
 import Hero from "@/components/home/Hero";
+import FeaturedTuitions from "@/components/home/FeaturedTuitions";
 import { getBrowseTuitions } from "@/lib/api/tuitons.";
 import { getHomeTotalUsers } from "@/lib/api/home";
 import { Tuition } from "../../teype/tuitiontype";
@@ -11,9 +12,9 @@ export const metadata = {
 };
 
 export default async function Home() {
-  // Fetch real verified tuitions & total user stats from /home/totaluser concurrently
+  // Fetch real verified tuitions & total user stats concurrently
   const [tuitionsData, userStats] = await Promise.all([
-    getBrowseTuitions("limit=8"),
+    getBrowseTuitions("limit=6"),
     getHomeTotalUsers(),
   ]);
 
@@ -30,13 +31,14 @@ export default async function Home() {
     (Array.isArray(tuitionsData) ? tuitionsData.length : tuitions.length);
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen">
       <Hero
         initialTuitions={tuitions}
         totalCount={total}
         totalTutors={userStats?.totalTutors}
         totalStudents={userStats?.totalStudents}
       />
-    </main>
+      <FeaturedTuitions tuitions={tuitions} />
+    </div>
   );
 }
