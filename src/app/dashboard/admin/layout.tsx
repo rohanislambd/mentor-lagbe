@@ -10,9 +10,14 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch {
+    redirect("/sign-in?callbackUrl=/dashboard/admin");
+  }
 
   if (!session?.user) {
     redirect("/sign-in?callbackUrl=/dashboard/admin");

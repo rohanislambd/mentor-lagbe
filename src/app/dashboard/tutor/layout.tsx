@@ -10,9 +10,14 @@ export default async function TutorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch {
+    redirect("/sign-in?callbackUrl=/dashboard/tutor");
+  }
 
   if (!session?.user) {
     redirect("/sign-in?callbackUrl=/dashboard/tutor");

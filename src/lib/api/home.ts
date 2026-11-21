@@ -1,5 +1,3 @@
-import { getTokenServer } from "../common/getTokenServer";
-
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export interface HomeTotalUserStats {
@@ -9,20 +7,14 @@ export interface HomeTotalUserStats {
 
 /**
  * Server-side function to fetch total tutor and student counts for Home page
+ * This is a public endpoint — no auth token required
  * Endpoint: GET /home/totaluser
  */
 export const getHomeTotalUsers = async (): Promise<HomeTotalUserStats | null> => {
   try {
-    const token = await getTokenServer();
     const baseUrl = BASE_URL ? BASE_URL.replace(/\/+$/, "") : "";
 
-    const headers: Record<string, string> = {};
-    if (token) {
-      headers.authorization = `Bearer ${token}`;
-    }
-
     const res = await fetch(`${baseUrl}/home/totaluser`, {
-      headers,
       cache: "no-store",
     });
 
