@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { headers } from "next/headers";
+import { Sparkles } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +23,28 @@ export async function DashboardSidebar() {
   const userName = session?.user?.name || "User";
   const userEmail = session?.user?.email || "";
   const firstLetter = userName.charAt(0).toUpperCase();
+
+  // Fetch real-time fresh plan (fallback to session plan)
+  let currentPlan = (session?.user as { plan?: string })?.plan || "free";
+  try {
+    const { getTokenServer } = await import("@/lib/common/getTokenServer");
+    const token = await getTokenServer();
+    if (token) {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") || "";
+      const res = await fetch(`${baseUrl}/users/me`, {
+        headers: { authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.plan) currentPlan = data.plan;
+      }
+    }
+  } catch {
+    // Fallback to session plan
+  }
+
+  const isPro = currentPlan.toLowerCase() === "pro";
 
   return (
     <Sidebar className="border-r border-sidebar-border bg-sidebar">
@@ -57,9 +80,16 @@ export async function DashboardSidebar() {
             {firstLetter}
           </div>
           <div className="flex flex-col min-w-0 flex-1">
-            <span className="text-xs font-semibold text-sidebar-foreground truncate">
-              {userName}
-            </span>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs font-semibold text-sidebar-foreground truncate">
+                {userName}
+              </span>
+              {isPro && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-linear-to-r from-amber-500 to-orange-500 text-white shadow-2xs shrink-0 leading-none">
+                  <Sparkles className="w-2.5 h-2.5" /> PRO
+                </span>
+              )}
+            </div>
             <span className="text-[10px] text-muted-foreground truncate">
               {userEmail}
             </span>
