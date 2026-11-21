@@ -1,19 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { motion, AnimatePresence, type Variants } from "framer-motion";
+import React from "react";
+import { motion, type Variants } from "framer-motion";
 import {
+  UserPlus,
   Search,
   FileCheck2,
-  CheckCircle2,
-  GraduationCap,
+  CreditCard,
   Sparkles,
-  ArrowRight,
-  BookOpen,
-  UserCheck,
-  Send,
-  Users,
 } from "lucide-react";
 
 interface StepItem {
@@ -21,77 +15,36 @@ interface StepItem {
   title: string;
   description: string;
   icon: React.ElementType;
-  tag: string;
-  tagColor: string;
 }
 
-const STUDENT_STEPS: StepItem[] = [
+const STEPS: StepItem[] = [
   {
     number: "01",
-    title: "Discover Verified Mentors",
-    description: "Browse approved listings and filter by subject, class level, mode (online or home tuition), and budget.",
+    title: "Create Role Account",
+    description:
+      "Sign up as a Student or Tutor with instant dashboard access and profile customization.",
+    icon: UserPlus,
+  },
+  {
+    number: "02",
+    title: "Post or Browse Batches",
+    description:
+      "Tutors publish subject batches; Admins verify quality before listings go live.",
     icon: Search,
-    tag: "Smart Search & Filters",
-    tagColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-  },
-  {
-    number: "02",
-    title: "Apply with One Click",
-    description: "Submit a free admission application with your contact number, preferred days, and any learning notes.",
-    icon: Send,
-    tag: "Free Application",
-    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
   },
   {
     number: "03",
-    title: "Track & Get Accepted",
-    description: "Monitor application progress in real-time from your student dashboard as tutors review and accept your request.",
+    title: "Apply & Track Real-Time",
+    description:
+      "Students submit preferred schedules and track application status directly in their dashboard.",
     icon: FileCheck2,
-    tag: "Real-time Tracking",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   },
   {
     number: "04",
-    title: "Start Learning & Excel",
-    description: "Direct contact is unlocked. Connect with your mentor and begin structured personalized sessions.",
-    icon: GraduationCap,
-    tag: "Mentorship Begins",
-    tagColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
-  },
-];
-
-const TUTOR_STEPS: StepItem[] = [
-  {
-    number: "01",
-    title: "Register & Build Profile",
-    description: "Sign up as a tutor, showcase your educational background, and highlight your teaching expertise.",
-    icon: UserCheck,
-    tag: "Quick Sign Up",
-    tagColor: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-  },
-  {
-    number: "02",
-    title: "Post Tuition Batches",
-    description: "Publish your tuition posts with subject, class, monthly fee, schedule, and online or in-person location.",
-    icon: BookOpen,
-    tag: "Fast Admin Review",
-    tagColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  },
-  {
-    number: "03",
-    title: "Manage Student Applicants",
-    description: "Receive incoming admission requests directly in your dashboard with student contact details and preferred times.",
-    icon: Users,
-    tag: "One-Click Review",
-    tagColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  },
-  {
-    number: "04",
-    title: "Accept & Teach Students",
-    description: "Accept suitable students, coordinate lesson schedules, and grow your teaching career with zero commission cuts.",
-    icon: CheckCircle2,
-    tag: "0% Commission",
-    tagColor: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    title: "Upgrade to Pro via Stripe",
+    description:
+      "Unlock unlimited tuition posts, verified badges, and priority booking with Stripe.",
+    icon: CreditCard,
   },
 ];
 
@@ -101,6 +54,7 @@ const containerVariants: Variants = {
     opacity: 1,
     transition: {
       staggerChildren: 0.12,
+      delayChildren: 0.1,
     },
   },
 };
@@ -118,148 +72,90 @@ const cardVariants: Variants = {
 };
 
 export default function HowItWorks() {
-  const [activeTab, setActiveTab] = useState<"student" | "tutor">("student");
-  const steps = activeTab === "student" ? STUDENT_STEPS : TUTOR_STEPS;
-
   return (
-    <section className="py-16 sm:py-24 bg-background relative overflow-hidden border-t border-border/60">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="py-16 sm:py-24 bg-slate-50/80 dark:bg-[#0b0e1b] relative overflow-hidden border-t border-border/80">
+      {/* Ambient background glow */}
+      <div
+        className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[450px] w-full max-w-6xl -translate-x-1/2 -translate-y-1/2 opacity-25 blur-3xl dark:opacity-15"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(245, 158, 11, 0.4) 0%, rgba(249, 115, 22, 0.2) 45%, transparent 70%)",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16">
         {/* Section Header with Motion */}
         <motion.div
           initial={{ opacity: 0, y: 26 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
           className="text-center space-y-4 max-w-2xl mx-auto"
         >
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Simple & Transparent Workflow</span>
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-800 dark:text-amber-400 border border-amber-500/30 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="uppercase tracking-widest text-[11px] font-extrabold">
+              Seamless Ecosystem
+            </span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
             How{" "}
-            <span className="bg-linear-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-amber-500 via-orange-500 to-amber-600 bg-clip-text text-transparent">
               MentorLagbe Works
             </span>
           </h2>
 
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Whether you are looking to learn or ready to teach, MentorLagbe makes finding and managing academic mentorship effortless in 4 simple steps.
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-medium leading-relaxed max-w-xl mx-auto">
+            Whether you are a student seeking structured mentorship or a qualified tutor building batches, getting started takes minutes.
           </p>
-
-          {/* Role Switcher Pill */}
-          <div className="pt-3 inline-flex p-1.5 rounded-2xl bg-muted/80 border border-border backdrop-blur-md shadow-inner gap-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab("student")}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeTab === "student"
-                  ? "bg-card text-foreground shadow-xs border border-border/60"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <GraduationCap className="w-4 h-4 text-amber-500" />
-              <span>For Students (Finding Tutors)</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("tutor")}
-              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                activeTab === "tutor"
-                  ? "bg-card text-foreground shadow-xs border border-border/60"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <BookOpen className="w-4 h-4 text-amber-500" />
-              <span>For Tutors (Posting Batches)</span>
-            </button>
-          </div>
         </motion.div>
 
-        {/* 4 Steps Grid with Animation */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative"
-          >
-            {steps.map((step) => {
-              const Icon = step.icon;
-
-              return (
-                <motion.div
-                  key={step.number}
-                  variants={cardVariants}
-                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className="bg-card border border-border/80 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-5 relative group"
-                >
-                  <div className="space-y-4">
-                    {/* Top Step Number & Icon */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-black text-amber-500/40 group-hover:text-amber-500 transition-colors font-mono">
-                        {step.number}
-                      </span>
-                      <div className="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20 group-hover:scale-105 transition-transform">
-                        <Icon className="w-5 h-5" />
-                      </div>
-                    </div>
-
-                    {/* Step Title & Tag */}
-                    <div className="space-y-1.5">
-                      <span className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold border ${step.tagColor}`}>
-                        {step.tag}
-                      </span>
-                      <h3 className="text-base font-bold text-foreground tracking-tight leading-snug">
-                        {step.title}
-                      </h3>
-                    </div>
-
-                    {/* Step Description */}
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {step.description}
-                    </p>
-                  </div>
-
-                  {/* Bottom visual accent line */}
-                  <div className="pt-2">
-                    <div className="h-1 w-12 rounded-full bg-amber-500/20 group-hover:w-full group-hover:bg-amber-500 transition-all duration-300" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Dynamic CTA depending on selected role */}
+        {/* 4 Cards Grid with High-Contrast Backgrounds & Sharp Typography */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, delay: 0.2 }}
-          className="text-center pt-2"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch"
         >
-          {activeTab === "student" ? (
-            <Link
-              href="/browse-tuitions"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs sm:text-sm shadow-xs hover:shadow-md transition-all active:scale-95"
-            >
-              <span>Explore Verified Tuitions</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          ) : (
-            <Link
-              href="/dashboard/tutor/post-tuition"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-foreground hover:bg-foreground/90 text-background font-bold text-xs sm:text-sm shadow-xs hover:shadow-md transition-all active:scale-95"
-            >
-              <span>Post Your Tuition Batch</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          )}
+          {STEPS.map((step) => {
+            const Icon = step.icon;
+
+            return (
+              <motion.div
+                key={step.number}
+                variants={cardVariants}
+                whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                className="rounded-3xl border-2 border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#13172e] p-7 shadow-xs hover:border-amber-500 hover:shadow-xl hover:shadow-amber-500/10 transition-all flex flex-col justify-between group relative overflow-hidden"
+              >
+                {/* Top Subtle Hover Accent Bar */}
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-transparent group-hover:bg-amber-500 transition-colors duration-300" />
+
+                <div>
+                  {/* Top Row: Icon on left, Step Number on right */}
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-2xl bg-amber-500/15 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/30 group-hover:bg-amber-500 group-hover:text-slate-950 group-hover:scale-105 transition-all duration-300 shadow-xs">
+                      <Icon className="w-6 h-6 stroke-[2.2]" />
+                    </div>
+                    <span className="text-3xl font-black text-amber-500/50 dark:text-amber-400/40 font-mono group-hover:text-amber-500 transition-colors">
+                      {step.number}
+                    </span>
+                  </div>
+
+                  {/* Step Title (High Contrast & Clear) */}
+                  <h3 className="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white mt-5 tracking-tight group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    {step.title}
+                  </h3>
+
+                  {/* Step Description (Crisp, High-Readability Text) */}
+                  <p className="text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed mt-2.5 font-medium">
+                    {step.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

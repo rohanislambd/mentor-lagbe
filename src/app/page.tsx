@@ -40,9 +40,9 @@ export default async function Home() {
         totalTutors={userStats?.totalTutors}
         totalStudents={userStats?.totalStudents}
       />
-      <HowItWorks />
       <FeaturedTuitions tuitions={tuitions} />
       <PricingSection />
+      <HowItWorks />
     </div>
   );
 }
