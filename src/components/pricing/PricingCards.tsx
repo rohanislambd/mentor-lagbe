@@ -13,6 +13,7 @@ import {
   Briefcase,
   Lock,
   Star,
+  AlertCircle,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
@@ -219,6 +220,32 @@ export function PricingCards() {
                 <div className="w-full h-12 rounded-xl text-xs font-bold border border-emerald-500/40 text-emerald-600 bg-emerald-500/10 flex items-center justify-center cursor-default">
                   Already Subscribed to Pro
                 </div>
+              ) : userRole === "tutor" ? (
+                <div className="space-y-1.5">
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full h-12 rounded-xl text-xs font-bold bg-muted/70 text-muted-foreground border border-border/80 flex items-center justify-center gap-1.5 cursor-not-allowed opacity-80"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Students Only (You are a Tutor)</span>
+                  </button>
+                  <p className="text-[11px] text-center text-muted-foreground">
+                    Tutors cannot buy student plans. Switch to{" "}
+                    <button
+                      type="button"
+                      onClick={() => setActiveRole("tutor")}
+                      className="text-amber-500 underline font-semibold cursor-pointer"
+                    >
+                      Tutor Plans
+                    </button>
+                    .
+                  </p>
+                </div>
+              ) : userRole === "admin" ? (
+                <div className="w-full h-12 rounded-xl text-xs font-bold bg-muted/60 text-muted-foreground border border-border/80 flex items-center justify-center cursor-default">
+                  Admins Have Full Access
+                </div>
               ) : (
                 <Link
                   href="/payment?plan=student"
@@ -392,6 +419,32 @@ export function PricingCards() {
               {userRole === "tutor" && currentPlan === "pro" ? (
                 <div className="w-full h-12 rounded-xl text-xs font-bold border border-amber-500/40 text-amber-400 bg-amber-500/10 flex items-center justify-center cursor-default">
                   Already Subscribed to Pro
+                </div>
+              ) : userRole === "student" ? (
+                <div className="space-y-1.5">
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full h-12 rounded-xl text-xs font-bold bg-slate-800/80 text-slate-400 border border-slate-700 flex items-center justify-center gap-1.5 cursor-not-allowed opacity-80"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Tutors Only (You are a Student)</span>
+                  </button>
+                  <p className="text-[11px] text-center text-slate-400">
+                    Students cannot buy tutor plans. Switch to{" "}
+                    <button
+                      type="button"
+                      onClick={() => setActiveRole("student")}
+                      className="text-amber-400 underline font-semibold cursor-pointer"
+                    >
+                      Student Plans
+                    </button>
+                    .
+                  </p>
+                </div>
+              ) : userRole === "admin" ? (
+                <div className="w-full h-12 rounded-xl text-xs font-bold bg-slate-800 text-slate-400 border border-slate-700 flex items-center justify-center cursor-default">
+                  Admins Have Full Access
                 </div>
               ) : (
                 <Link
