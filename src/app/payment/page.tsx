@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React, { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { PaymentCheckout } from "@/components/payment/PaymentCheckout";
