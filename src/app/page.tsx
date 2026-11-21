@@ -1,8 +1,10 @@
 import React from "react";
 import Hero from "@/components/home/Hero";
+import TopSubjects from "@/components/home/TopSubjects";
 import HowItWorks from "@/components/home/HowItWorks";
 import FeaturedTuitions from "@/components/home/FeaturedTuitions";
 import PricingSection from "@/components/home/PricingSection";
+import Testimonials from "@/components/home/Testimonials";
 import { getBrowseTuitions } from "@/lib/api/tuitons.";
 import { getHomeTotalUsers } from "@/lib/api/home";
 import { Tuition } from "../../teype/tuitiontype";
@@ -41,8 +43,15 @@ export default async function Home() {
         totalStudents={userStats?.totalStudents}
       />
       <FeaturedTuitions tuitions={tuitions} />
-      <PricingSection />
+        <TopSubjects
+        totalTutors={userStats?.totalTutors}
+        totalStudents={userStats?.totalStudents}
+        totalTuitions={total}
+      />
       <HowItWorks />
+      <Testimonials />
+      <PricingSection />
+    
     </div>
   );
 }

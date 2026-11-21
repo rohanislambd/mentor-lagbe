@@ -49,20 +49,6 @@ export function BrowseTuitionsFilters() {
     setSearchTerm(currentSearch);
   }
 
-  // Reset all filters on browser page reload / refresh
-  useEffect(() => {
-    try {
-      const navEntries = performance.getEntriesByType(
-        "navigation"
-      ) as PerformanceNavigationTiming[];
-      const isReload = navEntries?.[0]?.type === "reload";
-
-      if (isReload && window.location.search) {
-        router.replace(pathname);
-      }
-    } catch {}
-  }, [pathname, router]);
-
   // Real-time search on text change with debounce (350ms)
   useEffect(() => {
     const timer = setTimeout(() => {
