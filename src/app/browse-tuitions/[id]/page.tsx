@@ -39,26 +39,7 @@ export default async function TuitionDetailsPage({ params }: TuitionDetailsPageP
   const tuition: Tuition | null = rawData?.data || rawData?.result || rawData;
 
   if (!tuition || !tuition.title) {
-    return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 py-16 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4">
-          <BookOpen className="w-8 h-8" />
-        </div>
-        <h1 className="text-2xl font-black text-foreground tracking-tight">
-          Tuition Post Not Found
-        </h1>
-        <p className="text-sm text-muted-foreground mt-2 max-w-md">
-          The tuition posting you are looking for may have been removed, closed, or does not exist.
-        </p>
-        <Link
-          href="/browse-tuitions"
-          className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition-all active:scale-95 cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Browse Tuitions</span>
-        </Link>
-      </div>
-    );
+    notFound();
   }
 
   const tutorInitial = tuition.tutorName
