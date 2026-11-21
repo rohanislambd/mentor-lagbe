@@ -108,11 +108,11 @@ export function TuitionDetailsModal({
               variant="ghost"
               size="sm"
               title="View Details"
-              className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground cursor-pointer rounded-lg"
+              className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground cursor-pointer rounded-md"
             />
           }
         >
-          <Eye className="w-4 h-4" />
+          <Eye className="w-3.5 h-3.5" />
         </DialogTrigger>
       )}
 
