@@ -17,8 +17,10 @@ import {
   CheckCircle2,
   Camera,
   Trash2,
+  Check,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { validatePassword } from "@/lib/utils/password";
 import toast from "react-hot-toast";
 
 type Role = "student" | "tutor";
@@ -38,6 +40,7 @@ function SignUpForm() {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const pwdStrength = validatePassword(password);
 
   const [errors, setErrors] = useState<{
     name?: string;
@@ -122,10 +125,9 @@ function SignUpForm() {
       newErrors.email = "Please enter a valid email address";
     }
 
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    const pwdValidation = validatePassword(password);
+    if (!pwdValidation.isValid) {
+      newErrors.password = pwdValidation.errorMessage;
     }
 
     setErrors(newErrors);
@@ -411,8 +413,13 @@ function SignUpForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimum 6 characters"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }
+                  }}
+                  placeholder="Create a strong password"
                   className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm outline-none transition-colors bg-white dark:bg-slate-900 ${
                     errors.password
                       ? "border-red-500 focus:border-red-500"
@@ -432,6 +439,58 @@ function SignUpForm() {
                   )}
                 </button>
               </div>
+
+              {/* Password Strength Indicator & Criteria Checklist */}
+              {password.length > 0 && (
+                <div className="mt-2.5 space-y-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+                  {/* Strength Bar */}
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-[11px] font-medium">
+                      <span className="text-slate-500 dark:text-slate-400">Password Strength:</span>
+                      <span className={`font-bold ${pwdStrength.strengthColor.split(" ")[1]}`}>
+                        {pwdStrength.strengthLabel}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-1.5 h-1.5">
+                      {[1, 2, 3, 4].map((step) => (
+                        <div
+                          key={step}
+                          className={`rounded-full transition-all duration-300 ${
+                            pwdStrength.passedCount >= step + 1 || (step === 1 && pwdStrength.passedCount >= 1)
+                              ? pwdStrength.strengthColor.split(" ")[0]
+                              : "bg-slate-200 dark:bg-slate-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Criteria Checklist */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-[11px]">
+                    <div className={`flex items-center gap-1.5 ${pwdStrength.hasMinLength ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-slate-500 dark:text-slate-400"}`}>
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${pwdStrength.hasMinLength ? "text-emerald-500" : "text-slate-300 dark:text-slate-600"}`} />
+                      <span>At least 6 characters</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${pwdStrength.hasUpperCase ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-slate-500 dark:text-slate-400"}`}>
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${pwdStrength.hasUpperCase ? "text-emerald-500" : "text-slate-300 dark:text-slate-600"}`} />
+                      <span>1 uppercase letter (A-Z)</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${pwdStrength.hasLowerCase ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-slate-500 dark:text-slate-400"}`}>
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${pwdStrength.hasLowerCase ? "text-emerald-500" : "text-slate-300 dark:text-slate-600"}`} />
+                      <span>1 lowercase letter (a-z)</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${pwdStrength.hasNumber ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-slate-500 dark:text-slate-400"}`}>
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${pwdStrength.hasNumber ? "text-emerald-500" : "text-slate-300 dark:text-slate-600"}`} />
+                      <span>1 number (0-9)</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 sm:col-span-2 ${pwdStrength.hasSpecialChar ? "text-emerald-600 dark:text-emerald-400 font-medium" : "text-slate-500 dark:text-slate-400"}`}>
+                      <Check className={`w-3.5 h-3.5 shrink-0 ${pwdStrength.hasSpecialChar ? "text-emerald-500" : "text-slate-300 dark:text-slate-600"}`} />
+                      <span>1 special character (!@#$%^&*)</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {errors.password && (
                 <p className="text-xs text-red-500 mt-1">{errors.password}</p>
               )}

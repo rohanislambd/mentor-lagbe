@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { validatePassword } from "@/lib/utils/password";
 import toast from "react-hot-toast";
 
 function SignInForm() {
@@ -40,8 +41,9 @@ function SignInForm() {
       newErrors.email = "Please enter a valid email address";
     }
 
-    if (!password) {
-      newErrors.password = "Password is required";
+    const pwdValidation = validatePassword(password);
+    if (!pwdValidation.isValid) {
+      newErrors.password = pwdValidation.errorMessage;
     }
 
     setErrors(newErrors);
@@ -183,7 +185,12 @@ function SignInForm() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }
+                  }}
                   placeholder="Enter your password"
                   className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm outline-none transition-colors bg-white dark:bg-slate-900 ${
                     errors.password
