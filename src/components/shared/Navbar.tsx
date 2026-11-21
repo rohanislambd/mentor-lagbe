@@ -350,7 +350,7 @@ export function Navbar() {
                     <span>Dashboard</span>
                   </Link>
                   <Link
-                    href="/dashboard/profile"
+                    href={`/dashboard/${user.role}/profile`}
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
