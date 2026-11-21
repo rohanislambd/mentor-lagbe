@@ -1,4 +1,5 @@
-import React from "react";
+export const dynamic = "force-dynamic";
+
 import Hero from "@/components/home/Hero";
 import TopSubjects from "@/components/home/TopSubjects";
 import HowItWorks from "@/components/home/HowItWorks";
