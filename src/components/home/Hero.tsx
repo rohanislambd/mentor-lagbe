@@ -95,7 +95,7 @@ export default function Hero({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Headlines, Search & Actions */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left flex flex-col items-center lg:items-start max-w-2xl mx-auto lg:max-w-none lg:mx-0">
             {/* Top Ecosystem Pill */}
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs font-semibold shadow-2xs">
               <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
@@ -114,16 +114,16 @@ export default function Hero({
             </h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-base text-muted-foreground max-w-xl font-normal leading-relaxed">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl font-normal leading-relaxed mx-auto lg:mx-0">
               Connect with verified educators and subject specialists across Bangladesh. Discover
               custom 1-on-1 home tuitions or join interactive online batches tailored to your academic needs.
             </p>
 
             {/* Search Input & Action Button */}
-            <div className="pt-2 max-w-xl">
+            <div className="pt-2 w-full max-w-xl mx-auto lg:mx-0">
               <form
                 onSubmit={handleSearch}
-                className="flex items-center gap-2 p-1.5 sm:p-2 rounded-full bg-card border border-border shadow-md focus-within:ring-2 focus-within:ring-amber-500/40 transition-all"
+                className="flex items-center gap-2 p-1.5 sm:p-2 rounded-full bg-card border border-border shadow-md focus-within:ring-2 focus-within:ring-amber-500/40 transition-all text-left"
               >
                 <div className="relative flex-1 flex items-center min-w-0 pl-3 sm:pl-4">
                   <Search className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -145,7 +145,7 @@ export default function Hero({
               </form>
 
               {/* Quick Subject Pills */}
-              <div className="flex flex-wrap items-center gap-2 pt-3 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-3 text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground/80">Popular:</span>
                 {POPULAR_SUBJECTS.map((subject) => (
                   <Link
@@ -160,7 +160,7 @@ export default function Hero({
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-semibold text-muted-foreground">
+            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-xs font-semibold text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span>Admin-Verified Tutors</span>

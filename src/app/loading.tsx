@@ -8,24 +8,24 @@ export default function HomeLoading() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Column Skeleton */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-6 flex flex-col items-center lg:items-start max-w-2xl mx-auto lg:max-w-none lg:mx-0">
               {/* Top Ecosystem Pill */}
               <div className="h-7 w-72 bg-amber-500/15 rounded-full" />
 
               {/* Headline */}
-              <div className="space-y-3">
+              <div className="space-y-3 w-full flex flex-col items-center lg:items-start">
                 <div className="h-10 sm:h-14 w-full max-w-lg bg-muted rounded-2xl" />
                 <div className="h-10 sm:h-14 w-3/4 max-w-md bg-muted rounded-2xl" />
               </div>
 
               {/* Subtitle */}
-              <div className="space-y-2 max-w-xl">
+              <div className="space-y-2 max-w-xl w-full flex flex-col items-center lg:items-start">
                 <div className="h-4 w-full bg-muted/60 rounded" />
                 <div className="h-4 w-5/6 bg-muted/60 rounded" />
               </div>
 
               {/* Capsule Search Bar */}
-              <div className="pt-2 max-w-xl">
+              <div className="pt-2 w-full max-w-xl mx-auto lg:mx-0">
                 <div className="h-14 w-full rounded-full bg-card border border-border p-2 flex items-center justify-between shadow-xs">
                   <div className="flex items-center gap-3 pl-3 flex-1">
                     <div className="w-4 h-4 rounded-full bg-muted shrink-0" />
@@ -35,7 +35,7 @@ export default function HomeLoading() {
                 </div>
 
                 {/* Popular Tags */}
-                <div className="flex flex-wrap items-center gap-2 pt-3">
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-3">
                   <div className="h-3.5 w-12 bg-muted/60 rounded" />
                   {[...Array(5)].map((_, i) => (
                     <div key={i} className="h-6 w-20 bg-muted/40 rounded-lg" />
@@ -44,7 +44,7 @@ export default function HomeLoading() {
               </div>
 
               {/* Trust Badges */}
-              <div className="pt-2 flex flex-wrap items-center gap-4 sm:gap-6">
+              <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="h-4 w-32 bg-muted/50 rounded" />
                 ))}
