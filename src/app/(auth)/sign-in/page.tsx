@@ -1,15 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 
-export default function SignInPage() {
+function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
+  // Validate callback url to ensure it's a relative path on this site
+  const redirectTarget =
+    callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +70,7 @@ export default function SignInPage() {
       }
 
       toast.success("Welcome back! Signed in successfully.");
-      router.push("/");
+      router.push(redirectTarget);
       router.refresh();
     } catch (err: unknown) {
       const message =
@@ -81,7 +87,7 @@ export default function SignInPage() {
       toast.loading("Redirecting to Google Sign In...", { id: "google-login" });
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: redirectTarget,
       });
     } catch (err: unknown) {
       toast.dismiss("google-login");
@@ -91,6 +97,10 @@ export default function SignInPage() {
       setIsGoogleLoading(false);
     }
   };
+
+  const signUpHref = callbackUrl
+    ? `/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/sign-up";
 
   return (
     <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12">
@@ -184,7 +194,7 @@ export default function SignInPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -265,7 +275,7 @@ export default function SignInPage() {
         <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Don&apos;t have an account?{" "}
           <Link
-            href="/sign-up"
+            href={signUpHref}
             className="font-semibold text-amber-600 dark:text-amber-500 hover:underline"
           >
             Sign Up
@@ -273,5 +283,19 @@ export default function SignInPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+        </div>
+      }
+    >
+      <SignInForm />
+    </Suspense>
   );
 }

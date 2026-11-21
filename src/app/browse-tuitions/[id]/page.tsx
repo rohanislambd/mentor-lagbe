@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -318,7 +318,13 @@ export default async function TuitionDetailsPage({ params }: TuitionDetailsPageP
 
               {/* Apply for Tuition Modal Action */}
               <div className="pt-2">
-                <ApplyTuitionModal tuition={tuition} />
+                <Suspense
+                  fallback={
+                    <div className="h-12 w-full rounded-xl bg-amber-500/20 animate-pulse" />
+                  }
+                >
+                  <ApplyTuitionModal tuition={tuition} />
+                </Suspense>
               </div>
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground pt-1">

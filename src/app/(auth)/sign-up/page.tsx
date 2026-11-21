@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   GraduationCap,
   BookOpen,
@@ -23,8 +23,13 @@ import toast from "react-hot-toast";
 
 type Role = "student" | "tutor";
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
+  const redirectTarget =
+    callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -150,13 +155,13 @@ export default function SignUpPage() {
         return;
       }
 
-      router.push("/")
       toast.success(
         `Welcome to MentorLagbe, ${name.trim()}! Account created successfully as a ${
           role === "student" ? "Student" : "Tutor"
         }.`
       );
-
+      router.push(redirectTarget);
+      router.refresh();
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "An unexpected error occurred";
@@ -164,6 +169,10 @@ export default function SignUpPage() {
       setIsLoading(false);
     }
   };
+
+  const signInHref = callbackUrl
+    ? `/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`
+    : "/sign-in";
 
   return (
     <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 py-12">
@@ -202,117 +211,134 @@ export default function SignUpPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Role Selection */}
+            {/* Account Role Selector */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                Join As:
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                I want to join as a
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setRole("student")}
-                  className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all cursor-pointer ${
+                  className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
                     role === "student"
-                      ? "border-amber-500 bg-amber-50/60 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 shadow-2xs"
-                      : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400"
+                      ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-500"
+                      : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 font-semibold text-sm">
-                    <GraduationCap className="w-4 h-4" />
-                    <span>Student</span>
+                  <div className="flex items-center justify-between">
+                    <GraduationCap
+                      className={`w-5 h-5 ${
+                        role === "student"
+                          ? "text-amber-600 dark:text-amber-500"
+                          : "text-slate-400"
+                      }`}
+                    />
                     {role === "student" && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-500" />
+                      <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-500" />
                     )}
                   </div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    Find tutors & batches
+                  <span className="font-semibold text-sm text-slate-900 dark:text-white mt-1">
+                    Student
+                  </span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Find expert tutors
                   </span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRole("tutor")}
-                  className={`flex flex-col items-center justify-center p-3.5 rounded-xl border-2 transition-all cursor-pointer ${
+                  className={`p-3 rounded-xl border text-left transition-all flex flex-col gap-1 cursor-pointer ${
                     role === "tutor"
-                      ? "border-amber-500 bg-amber-50/60 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 shadow-2xs"
-                      : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400"
+                      ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-500"
+                      : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 font-semibold text-sm">
-                    <BookOpen className="w-4 h-4" />
-                    <span>Tutor</span>
+                  <div className="flex items-center justify-between">
+                    <BookOpen
+                      className={`w-5 h-5 ${
+                        role === "tutor"
+                          ? "text-amber-600 dark:text-amber-500"
+                          : "text-slate-400"
+                      }`}
+                    />
                     {role === "tutor" && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-amber-500" />
+                      <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-500" />
                     )}
                   </div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                    Offer tuition & mentor
+                  <span className="font-semibold text-sm text-slate-900 dark:text-white mt-1">
+                    Tutor
+                  </span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Teach & earn money
                   </span>
                 </button>
               </div>
             </div>
 
-            {/* Profile Photo Upload with Live Preview */}
-            <div className="flex items-center gap-3.5 p-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/30">
-              <div className="relative h-14 w-14 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-700 flex items-center justify-center shrink-0">
-                {isUploadingImage ? (
-                  <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
-                ) : imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={imageUrl}
-                    alt="Profile Preview"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <User className="w-7 h-7 text-slate-400" />
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Profile Photo (Optional)
-                </span>
-                <div className="flex items-center gap-2">
-                  <label
-                    htmlFor="profile-image-upload"
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-2xs ${
-                      isUploadingImage
-                        ? "opacity-60 cursor-not-allowed pointer-events-none"
-                        : "cursor-pointer"
-                    }`}
-                  >
-                    <Camera className="w-3.5 h-3.5 text-amber-500" />
-                    <span>
-                      {isUploadingImage
-                        ? "Uploading..."
-                        : imageUrl
-                        ? "Change"
-                        : "Upload"}
-                    </span>
-                  </label>
-                  {imageUrl && !isUploadingImage && (
+            {/* Profile Picture Upload */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                Profile Photo (Optional)
+              </label>
+              <div className="flex items-center gap-3">
+                {imageUrl ? (
+                  <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-amber-500 shrink-0">
+                    <Image
+                      src={imageUrl}
+                      alt="Profile Preview"
+                      fill
+                      className="object-cover"
+                    />
                     <button
                       type="button"
                       onClick={handleRemoveImage}
-                      className="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium cursor-pointer"
+                      className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity text-white cursor-pointer"
+                      title="Remove image"
                     >
-                      <Trash2 className="w-3 h-3" />
-                      <span>Remove</span>
+                      <Trash2 className="w-4 h-4 text-red-400" />
                     </button>
-                  )}
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0">
+                    <User className="w-6 h-6 text-slate-400" />
+                  </div>
+                )}
+
+                <div className="flex-1">
+                  <label
+                    htmlFor="profile-upload"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700/80 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer transition-colors"
+                  >
+                    {isUploadingImage ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{imageUrl ? "Change Photo" : "Upload Photo"}</span>
+                      </>
+                    )}
+                  </label>
                   <input
-                    id="profile-image-upload"
+                    id="profile-upload"
                     type="file"
                     accept="image/*"
-                    disabled={isUploadingImage}
                     onChange={handleImageChange}
+                    disabled={isUploadingImage}
                     className="hidden"
                   />
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    JPG, PNG or WEBP (Max 2MB)
+                  </p>
                 </div>
-                {errors.image && (
-                  <p className="text-xs text-red-500 mt-1">{errors.image}</p>
-                )}
               </div>
+              {errors.image && (
+                <p className="text-xs text-red-500 mt-1">{errors.image}</p>
+              )}
             </div>
 
             {/* Full Name */}
@@ -330,7 +356,7 @@ export default function SignUpPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Rahim Ahmed"
+                  placeholder="e.g. John Doe"
                   className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-sm outline-none transition-colors bg-white dark:bg-slate-900 ${
                     errors.name
                       ? "border-red-500 focus:border-red-500"
@@ -386,7 +412,7 @@ export default function SignUpPage() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder="Minimum 6 characters"
                   className={`w-full pl-10 pr-10 py-2.5 rounded-xl border text-sm outline-none transition-colors bg-white dark:bg-slate-900 ${
                     errors.password
                       ? "border-red-500 focus:border-red-500"
@@ -396,7 +422,7 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -436,7 +462,7 @@ export default function SignUpPage() {
         <p className="text-center text-sm text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
           <Link
-            href="/sign-in"
+            href={signInHref}
             className="font-semibold text-amber-600 dark:text-amber-500 hover:underline"
           >
             Sign In
@@ -444,5 +470,19 @@ export default function SignUpPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+        </div>
+      }
+    >
+      <SignUpForm />
+    </Suspense>
   );
 }

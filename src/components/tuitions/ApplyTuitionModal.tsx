@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Send,
   Loader2,
@@ -45,6 +46,9 @@ export const PREFERRED_SCHEDULE_OPTIONS = [
 ];
 
 export function ApplyTuitionModal({ tuition }: ApplyTuitionModalProps) {
+  const searchParams = useSearchParams();
+  const autoApply = searchParams.get("apply");
+
   const [open, setOpen] = useState(false);
   const [phone, setPhone] = useState("");
   const [preferredSchedule, setPreferredSchedule] = useState("Flexible / Discuss with Tutor");
@@ -56,6 +60,19 @@ export function ApplyTuitionModal({ tuition }: ApplyTuitionModalProps) {
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
   const userRole = (user as { role?: string })?.role || "student";
+
+  const tuitionId =
+    tuition._id || (tuition as unknown as { id?: string }).id || "";
+  const callbackUrl = `/browse-tuitions/${tuitionId}?apply=true`;
+
+  // Auto-open application modal if student was redirected back from sign-in/sign-up
+  useEffect(() => {
+    if (autoApply === "true" && user && userRole === "student" && !isSuccess) {
+      queueMicrotask(() => {
+        setOpen(true);
+      });
+    }
+  }, [autoApply, user, userRole, isSuccess]);
 
   // Check localStorage immediately on mount to prevent any flash/reversion on refresh
   useEffect(() => {
@@ -279,13 +296,13 @@ export function ApplyTuitionModal({ tuition }: ApplyTuitionModalProps) {
             </div>
             <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
               <Link
-                href="/sign-in"
+                href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
                 className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition-colors"
               >
                 Log In as Student
               </Link>
               <Link
-                href="/sign-up"
+                href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
                 className="px-5 py-2.5 rounded-xl bg-muted hover:bg-muted/80 text-foreground text-xs font-semibold border border-input transition-colors"
               >
                 Create Account

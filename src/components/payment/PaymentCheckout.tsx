@@ -113,14 +113,14 @@ export function PaymentCheckout() {
         </div>
         <div className="pt-2 flex flex-col gap-2.5">
           <Link
-            href={`/login?callbackUrl=/payment${planParam ? `?plan=${planParam}` : ""}`}
+            href={`/sign-in?callbackUrl=${encodeURIComponent(`/payment${planParam ? `?plan=${planParam}` : ""}`)}`}
             className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all shadow-xs"
           >
             <span>Log In to Continue</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/register"
+            href={`/sign-up?callbackUrl=${encodeURIComponent(`/payment${planParam ? `?plan=${planParam}` : ""}`)}`}
             className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-xl border border-border bg-background hover:bg-muted text-foreground font-semibold text-xs transition-colors"
           >
             Create an Account
