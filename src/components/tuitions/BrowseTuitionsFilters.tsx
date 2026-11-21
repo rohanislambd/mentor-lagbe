@@ -2,7 +2,7 @@
 
 import React, { useTransition, useState, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X, Loader2, ChevronDown } from "lucide-react";
 
 const SUBJECTS = [
   "All Subjects",
@@ -149,17 +149,19 @@ export function BrowseTuitionsFilters() {
             <select
               value={currentSubject}
               onChange={(e) => updateFilters({ subject: e.target.value })}
-              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 cursor-pointer transition-colors pr-8"
+              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 cursor-pointer transition-colors pr-8 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100 [&>option]:bg-white dark:[&>option]:bg-[#0f172a] [&>option]:text-slate-900 dark:[&>option]:text-slate-100"
             >
               {SUBJECTS.map((sub) => (
-                <option key={sub} value={sub}>
+                <option
+                  key={sub}
+                  value={sub}
+                  className="bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 py-2"
+                >
                   {sub}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
-              ▼
-            </div>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           </div>
 
           {/* Class Level Dropdown */}
@@ -167,17 +169,19 @@ export function BrowseTuitionsFilters() {
             <select
               value={currentClassLevel}
               onChange={(e) => updateFilters({ classLevel: e.target.value })}
-              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 cursor-pointer transition-colors pr-8"
+              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 cursor-pointer transition-colors pr-8 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100 [&>option]:bg-white dark:[&>option]:bg-[#0f172a] [&>option]:text-slate-900 dark:[&>option]:text-slate-100"
             >
               {CLASS_LEVELS.map((level) => (
-                <option key={level} value={level}>
+                <option
+                  key={level}
+                  value={level}
+                  className="bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 py-2"
+                >
                   {level}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
-              ▼
-            </div>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           </div>
 
           {/* Mode Dropdown */}
@@ -185,17 +189,19 @@ export function BrowseTuitionsFilters() {
             <select
               value={currentMode}
               onChange={(e) => updateFilters({ mode: e.target.value })}
-              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 cursor-pointer transition-colors pr-8"
+              className="w-full appearance-none px-3.5 py-2.5 text-xs font-semibold rounded-xl bg-background border border-border text-foreground hover:bg-muted/30 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 cursor-pointer transition-colors pr-8 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100 [&>option]:bg-white dark:[&>option]:bg-[#0f172a] [&>option]:text-slate-900 dark:[&>option]:text-slate-100"
             >
               {MODES.map((mode) => (
-                <option key={mode} value={mode}>
+                <option
+                  key={mode}
+                  value={mode}
+                  className="bg-white dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 py-2"
+                >
                   {mode}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
-              ▼
-            </div>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           </div>
         </div>
 
