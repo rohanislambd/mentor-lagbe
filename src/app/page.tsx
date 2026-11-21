@@ -1,5 +1,6 @@
 import React from "react";
 import Hero from "@/components/home/Hero";
+import HowItWorks from "@/components/home/HowItWorks";
 import FeaturedTuitions from "@/components/home/FeaturedTuitions";
 import PricingSection from "@/components/home/PricingSection";
 import { getBrowseTuitions } from "@/lib/api/tuitons.";
@@ -39,6 +40,7 @@ export default async function Home() {
         totalTutors={userStats?.totalTutors}
         totalStudents={userStats?.totalStudents}
       />
+      <HowItWorks />
       <FeaturedTuitions tuitions={tuitions} />
       <PricingSection />
     </div>
