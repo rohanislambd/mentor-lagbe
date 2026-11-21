@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { getAdminAllTuitions } from "@/lib/api/admin";
 import { Tuition } from "../../../../../teype/tuitiontype";

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { getTutorApplicants } from "@/lib/api/applicatons";
 import { TutorApplicantsTable } from "@/components/dashboard/tutor/TutorApplicantsTable";

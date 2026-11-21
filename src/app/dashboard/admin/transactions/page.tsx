@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { getAllPayments, PaymentTransaction } from "@/lib/api/payment";
 import { AdminTransactionsTable } from "@/components/dashboard/admin/AdminTransactionsTable";

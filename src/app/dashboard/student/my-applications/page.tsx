@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { getStudentApplications } from "@/lib/api/applicatons";
 import { StudentApplicationsTable } from "@/components/dashboard/student/StudentApplicationsTable";

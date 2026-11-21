@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React, { Suspense } from "react";
 import { getBrowseTuitions } from "@/lib/api/tuitons.";
 import { Tuition } from "../../../teype/tuitiontype";

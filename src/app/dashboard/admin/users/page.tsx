@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from "react";
 import { getAdminAllUsers } from "@/lib/api/admin";
 import { AdminUserManagementTable } from "@/components/dashboard/admin/AdminUserManagementTable";
