@@ -12,9 +12,14 @@ export const metadata = {
 };
 
 export default async function UnauthorizedPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("UnauthorizedPage getSession error:", error);
+  }
 
   const role = session?.user?.role;
   const userDashboard =

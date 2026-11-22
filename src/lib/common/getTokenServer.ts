@@ -3,10 +3,15 @@ import { headers } from "next/headers";
 import { auth } from "../auth";
 
 export const getTokenServer = async () => {
-  const data = await auth.api.getToken({
-    headers: await headers(),
-  });
-  return data?.token;
+  try {
+    const data = await auth.api.getToken({
+      headers: await headers(),
+    });
+    return data?.token;
+  } catch (error) {
+    console.error("getTokenServer error:", error);
+    return undefined;
+  }
 };
 
 

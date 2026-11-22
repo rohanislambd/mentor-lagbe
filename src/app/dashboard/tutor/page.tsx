@@ -26,9 +26,14 @@ export const metadata = {
 };
 
 export default async function TutorOverviewPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("TutorOverviewPage getSession error:", error);
+  }
 
   const userName = session?.user?.name || "Tutor";
 

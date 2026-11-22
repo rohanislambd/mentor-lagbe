@@ -24,9 +24,14 @@ export const metadata = {
 };
 
 export default async function StudentOverviewPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("StudentOverviewPage getSession error:", error);
+  }
 
   const userName = session?.user?.name || "Student";
 

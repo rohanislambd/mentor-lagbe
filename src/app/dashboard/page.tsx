@@ -5,9 +5,15 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
 export default async function DashboardRootPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("DashboardRootPage getSession error:", error);
+    redirect("/sign-in?callbackUrl=/dashboard");
+  }
 
   if (!session?.user) {
     redirect("/sign-in?callbackUrl=/dashboard");
