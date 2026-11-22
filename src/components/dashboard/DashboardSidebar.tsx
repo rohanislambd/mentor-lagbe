@@ -15,33 +15,40 @@ import { DashboardMenu } from "./DashboardMenu";
 import { SignOutButton } from "./SignOutButton";
 
 export async function DashboardSidebar() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("DashboardSidebar getSession error:", error);
+  }
 
   const role = (session?.user?.role as "admin" | "tutor" | "student") || "student";
   const userName = session?.user?.name || "User";
   const userEmail = session?.user?.email || "";
   const firstLetter = userName.charAt(0).toUpperCase();
 
-  // Fetch real-time fresh plan (fallback to session plan)
+  // Fetch real-time fresh plan (fallback to session plan) - Not needed for admin
   let currentPlan = (session?.user as { plan?: string })?.plan || "free";
-  try {
-    const { getTokenServer } = await import("@/lib/common/getTokenServer");
-    const token = await getTokenServer();
-    if (token) {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") || "";
-      const res = await fetch(`${baseUrl}/users/me`, {
-        headers: { authorization: `Bearer ${token}` },
-        cache: "no-store",
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.plan) currentPlan = data.plan;
+  if (role !== "admin") {
+    try {
+      const { getTokenServer } = await import("@/lib/common/getTokenServer");
+      const token = await getTokenServer();
+      if (token) {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") || "";
+        const res = await fetch(`${baseUrl}/users/me`, {
+          headers: { authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.plan) currentPlan = data.plan;
+        }
       }
+    } catch {
+      // Fallback to session plan
     }
-  } catch {
-    // Fallback to session plan
   }
 
   const isPro = currentPlan.toLowerCase() === "pro";
