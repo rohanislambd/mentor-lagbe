@@ -175,25 +175,25 @@ export function StudentApplicationsTable({
         ) : (
           /* Applications Table */
           <div className="overflow-x-auto rounded-xl border border-border/60">
-            <Table>
+            <Table className="min-w-[820px]">
               <TableHeader className="bg-muted/40">
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 min-w-[240px] max-w-[320px]">
                     Tuition Title
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 min-w-[170px]">
                     Tutor
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 min-w-[100px]">
                     Monthly Fee
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 min-w-[110px]">
                     Applied Date
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 min-w-[105px]">
                     Status
                   </TableHead>
-                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 text-right">
+                  <TableHead className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase py-3.5 text-right min-w-[95px]">
                     Action
                   </TableHead>
                 </TableRow>
@@ -203,51 +203,65 @@ export function StudentApplicationsTable({
                 {applications.map((app, index) => (
                   <TableRow key={app._id || `app-${index}`} className="hover:bg-muted/30 transition-colors">
                     {/* Tuition Title */}
-                    <TableCell className="font-semibold text-foreground text-xs sm:text-sm py-4 max-w-[280px]">
-                      {app.tuitionId ? (
-                        <Link
-                          href={`/browse-tuitions/${app.tuitionId}`}
-                          className="hover:text-amber-500 hover:underline transition-colors block"
-                        >
-                          {app.tuitionTitle}
-                        </Link>
-                      ) : (
-                        <span>{app.tuitionTitle}</span>
-                      )}
-                      <span className="text-[11px] text-muted-foreground block font-normal mt-0.5">
-                        {app.subject} • {app.preferredSchedule}
-                      </span>
+                    <TableCell className="py-4 min-w-[240px] max-w-[320px] whitespace-normal">
+                      <div className="flex flex-col gap-0.5">
+                        {app.tuitionId ? (
+                          <Link
+                            href={`/browse-tuitions/${app.tuitionId}`}
+                            className="font-bold text-xs sm:text-sm text-foreground hover:text-amber-500 hover:underline transition-colors line-clamp-2 leading-snug"
+                            title={app.tuitionTitle}
+                          >
+                            {app.tuitionTitle}
+                          </Link>
+                        ) : (
+                          <span
+                            className="font-bold text-xs sm:text-sm text-foreground line-clamp-2 leading-snug"
+                            title={app.tuitionTitle}
+                          >
+                            {app.tuitionTitle}
+                          </span>
+                        )}
+                        <span className="text-[11px] text-muted-foreground font-normal line-clamp-1 mt-0.5">
+                          {app.subject} • {app.preferredSchedule}
+                        </span>
+                      </div>
                     </TableCell>
 
                     {/* Tutor Details */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 min-w-[170px]">
                       <div className="space-y-0.5">
-                        <p className="text-xs sm:text-sm font-semibold text-foreground">
+                        <p
+                          className="text-xs sm:text-sm font-semibold text-foreground truncate max-w-[170px]"
+                          title={app.tutorName || "Assigned Tutor"}
+                        >
                           {app.tutorName || "Assigned Tutor"}
                         </p>
-                        <p className="text-[11px] text-muted-foreground truncate max-w-[200px]">
+                        <p
+                          className="text-[11px] text-muted-foreground truncate max-w-[170px]"
+                          title={app.tutorEmail}
+                        >
                           {app.tutorEmail}
                         </p>
                       </div>
                     </TableCell>
 
                     {/* Monthly Fee */}
-                    <TableCell className="py-4 font-bold text-xs sm:text-sm text-foreground">
+                    <TableCell className="py-4 min-w-[100px] font-bold text-xs sm:text-sm text-foreground">
                       ৳{Number(app.monthlyFee || 0).toLocaleString()}
                     </TableCell>
 
                     {/* Applied Date */}
-                    <TableCell className="py-4 text-xs text-muted-foreground font-medium">
+                    <TableCell className="py-4 min-w-[110px] text-xs text-muted-foreground font-medium">
                       {formatDate(app.appliedAt || app.appiedAt || app.createdAt)}
                     </TableCell>
 
                     {/* Status Badge */}
-                    <TableCell className="py-4">
+                    <TableCell className="py-4 min-w-[105px]">
                       {renderStatusBadge(app.status)}
                     </TableCell>
 
                     {/* Action */}
-                    <TableCell className="py-4 text-right">
+                    <TableCell className="py-4 min-w-[95px] text-right">
                       {app.status === "pending" ? (
                         <button
                           type="button"
