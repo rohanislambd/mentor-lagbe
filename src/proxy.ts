@@ -1,32 +1,26 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
-export function proxy(request: NextRequest) {
-  const { pathname, search } = request.nextUrl;
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  const sessionToken =
-    request.cookies.get("better-auth.session_token")?.value ||
-    request.cookies.get("__Secure-better-auth.session_token")?.value;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   const isAuthRoute = pathname === "/sign-in" || pathname === "/sign-up";
+  const isProtectedRoute =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/payment");
 
-  // If already logged in and visiting sign-in or sign-up, redirect to callbackUrl or home
-  if (sessionToken && isAuthRoute) {
-    const callbackUrl = request.nextUrl.searchParams.get("callbackUrl");
-    const redirectUrl =
-      callbackUrl && callbackUrl.startsWith("/") ? callbackUrl : "/";
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+  // Logged-in users cannot access sign-in or sign-up pages (redirect to home)
+  if (session && isAuthRoute) {
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Protected routes requiring authentication
-  const isProtectedRoute =
-    pathname.startsWith("/payment") || pathname.startsWith("/dashboard");
-
-  if (!sessionToken && isProtectedRoute) {
-    const callback = `${pathname}${search}`;
-    const signInUrl = new URL("/sign-in", request.url);
-    signInUrl.searchParams.set("callbackUrl", callback);
-    return NextResponse.redirect(signInUrl);
+  // Non-logged-in users cannot access protected routes
+  if (!session && isProtectedRoute) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
   return NextResponse.next();
@@ -34,10 +28,10 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/payment",
-    "/payment/:path*",
     "/dashboard",
     "/dashboard/:path*",
+    "/payment",
+    "/payment/:path*",
     "/sign-in",
     "/sign-up",
   ],
