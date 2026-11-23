@@ -214,28 +214,85 @@ However, the crashes persisted—because the root problem was not at the databas
 ### 🔎 The Discovery & Root Cause
 Deep analysis of Next.js's internal error digest (`digest: '915220102'`) revealed the actual failure mechanism:
 
-1. **Unhandled Exception in Shared UI (`DashboardSidebar.tsx`):**
-   All dashboard routes share `DashboardLayout`, which mounts `DashboardSidebar`. Inside the sidebar, session retrieval lacked error boundaries:
+1. **Server-Side Session Overload in Shared UI (`DashboardSidebar.tsx`):**
+   Originally, `DashboardSidebar` was an `async` Server Component executing direct database queries via `auth.api.getSession({ headers: await headers() })` on every route change:
    ```tsx
-   // ❌ Before: No try...catch error boundary
+   // ❌ Before: Server Component querying MongoDB on every layout render
    const session = await auth.api.getSession({
      headers: await headers(),
    });
    ```
-   In Next.js Server Components, any unhandled promise rejection immediately aborts page rendering. Any microscopic cold-start latency in Vercel serverless caused this single line to trigger a fatal 500 boundary crash.
+   In Vercel serverless environments, when containers idle, open database TCP sockets are dropped. When a container unfreezes, running concurrent server-side database queries across `Layout`, `Sidebar`, and Page components overwhelmed the connection pool, marking the MongoDB driver topology as closed (`MongoTopologyClosedError`) and crashing the entire page.
 
-2. **Serverless Concurrent Query Overload (Race Condition):**
-   When navigating to a dashboard route, multiple server components (`Layout`, `Sidebar`, and page-level endpoints) executed parallel database queries simultaneously. The sidebar was also unnecessarily fetching `/users/me` for administrators (who do not possess student/tutor subscription tiers). In cold serverless containers, these concurrent demands triggered socket drops, resulting in a closed topology.
+2. **UI Role Hydration Race Condition:**
+   Because session fetching occurred on the server with arbitrary latency, the sidebar frequently fell back to default `"User"` and `"Student"` states before the real role arrived, requiring users to manually hard-refresh.
 
-### ✅ The Clean Solution
-1. **Defensive Error Handling:** Wrapped `auth.api.getSession()` inside a robust `try...catch` block in `DashboardSidebar.tsx`, ensuring that any temporary session fetch delay never takes down the entire parent page.
-2. **Eliminated Redundant Requests:** Added a strict role gate (`if (role !== "admin")`) in the sidebar to prevent unnecessary `/users/me` subscription checks for administrators.
-3. **Safe Connection Caching:** Removed restrictive timeout overrides and established a standard global singleton (`globalThis._mongoClient`) in `src/lib/auth.ts` to reuse connection pools across warm serverless lambdas.
+### ✅ The Clean Solution: Server Component vs. Client Component Best Practices
+
+Depending on where session data is needed, both approaches are completely valid when implemented with the correct engineering practices:
+
+#### 1. In Server Components (Pages, Layouts, SSR Endpoints)
+If you need session authentication directly on the server (for example, in server-rendered `page.tsx` for route access checks or database queries), **`auth.api.getSession()` can be used, BUT it MUST always be wrapped inside a `try...catch` block**:
+
+```tsx
+// ✅ If Server Component: CAN be used, but MUST have a try...catch boundary
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+
+export default async function DashboardPage() {
+  let session = null;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
+  } catch (error) {
+    console.error("Session retrieval error:", error);
+    // Graceful fallback or safe redirection without bringing down the whole page
+  }
+
+  // Safe checks with error boundaries
+}
+```
+> **Why?** In Vercel serverless environments, any brief network fluctuation or cold-start timeout without `try...catch` immediately triggers an unhandled promise rejection, taking down the entire route with a fatal 500 error digest crash.
+
+---
+
+#### 2. In Shared Layout Components (Sidebars, Menus, Topbars)
+For persistent UI components that stay mounted during navigation (like `DashboardSidebar`), migrating to a **Client Component using Better-Auth's reactive `useSession()`** is the superior architectural choice:
+
+```tsx
+// ✅ If Client Component UI: Decoupled useSession() with strict loading gate
+"use client";
+
+import { authClient } from "@/lib/auth-client";
+
+export function DashboardSidebar() {
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  const role = user?.role as "admin" | "tutor" | "student" | undefined;
+
+  // Render clean skeleton loader until the verified role arrives
+  if (isPending || !role) {
+    return <SidebarLoadingSkeleton />;
+  }
+
+  return (
+    <Sidebar>
+      {/* Exact role menu rendered without server database dependencies */}
+      <DashboardMenu role={role} />
+    </Sidebar>
+  );
+}
+```
+
+1. **Zero Database Pressure on Serverless:** The sidebar reads session state directly from browser-managed secure cookies without making extra database queries on every navigation, completely eliminating `MongoTopologyClosedError` from the UI layout.
+2. **Strict Loading Boundary:** The `if (isPending || !role)` gate prevents premature fallback renders. The sidebar shows a neat skeleton until the authenticated role is verified, eliminating wrong role flashes.
+3. **Decoupled Architecture:** Separated presentation state (sidebar navigation & active role tabs) from server-side data fetching, resulting in instantaneous page transitions and zero Vercel crashes.
 
 ### 🎓 Key Personal Learnings
-- **Distinguish Symptoms from Root Causes:** An error message describes *what broke*, not necessarily *what triggered the failure*. In serverless environments, brief network fluctuations can occur—defensive coding must ensure these fluctuations do not cascade into full application crashes.
-- **Understand Next.js Error Digests:** Encountering an error `digest` indicates an unhandled exception reached the root server boundary. Always inspect the entire component hierarchy, especially shared parent layouts and global components.
-- **Protect Shared Layout Components:** Core UI components (like Sidebars and Headers) must always be wrapped with defensive fallbacks (`try...catch`). A secondary component failing to retrieve supplementary data should never prevent the user from viewing the primary page content.
+- **Choose the Right Component Boundary:** Heavy data queries belong on the server, but persistent layout elements (like navigation sidebars and headers) thrive as Client Components powered by `useSession()`. This isolates UI rendering from serverless database lifecycle quirks.
+- **Distinguish Symptoms from Root Causes:** An error message describes *what broke*, not necessarily *what triggered the failure*. The database driver closed because too many serverless components were hammering the same idle connection simultaneously.
+- **Eliminate Premature Fallbacks:** Never fall back to a default role (`|| "student"`) while authentication is still in-flight. Always hold the UI in a skeleton loading state until the real role is confirmed.
 
 ---
 

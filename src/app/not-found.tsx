@@ -79,7 +79,7 @@ export default function NotFound() {
         </div>
 
         {/* 3 Modern Interactive Destination Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-left pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left pt-2">
           {/* Card 1: Homepage */}
           <Link
             href="/"
@@ -118,24 +118,6 @@ export default function NotFound() {
             </div>
           </Link>
 
-          {/* Card 3: User Dashboard */}
-          <Link
-            href="/dashboard"
-            className="group p-5 rounded-2xl bg-card/80 hover:bg-card border border-border/80 hover:border-purple-500/50 shadow-xs hover:shadow-md transition-all flex flex-col justify-between gap-4 cursor-pointer"
-          >
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-              <LayoutDashboard className="w-5 h-5" />
-            </div>
-            <div className="space-y-1">
-              <h2 className="font-bold text-sm text-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-1.5">
-                <span>My Dashboard</span>
-                <ArrowRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-              </h2>
-              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                Access your student or tutor applications and profile.
-              </p>
-            </div>
-          </Link>
         </div>
 
         {/* Minimal Footer Links */}

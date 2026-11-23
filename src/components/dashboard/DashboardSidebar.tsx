@@ -1,6 +1,8 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { headers } from "next/headers";
 import { Sparkles } from "lucide-react";
 import {
   Sidebar,
@@ -10,47 +12,81 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { auth } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
+import { getCurrentUserProfile } from "@/lib/actions api/users";
 import { DashboardMenu } from "./DashboardMenu";
 import { SignOutButton } from "./SignOutButton";
 
-export async function DashboardSidebar() {
-  let session = null;
-  try {
-    session = await auth.api.getSession({
-      headers: await headers(),
-    });
-  } catch (error) {
-    console.error("DashboardSidebar getSession error:", error);
-  }
+export function DashboardSidebar() {
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user;
+  const role = user?.role as "admin" | "tutor" | "student" | undefined;
 
-  const role = (session?.user?.role as "admin" | "tutor" | "student") || "student";
-  const userName = session?.user?.name || "User";
-  const userEmail = session?.user?.email || "";
-  const firstLetter = userName.charAt(0).toUpperCase();
+  const [currentPlan, setCurrentPlan] = useState<string>(
+    (user as { plan?: string })?.plan || "free"
+  );
 
-  // Fetch real-time fresh plan (fallback to session plan) - Not needed for admin
-  let currentPlan = (session?.user as { plan?: string })?.plan || "free";
-  if (role !== "admin") {
-    try {
-      const { getTokenServer } = await import("@/lib/common/getTokenServer");
-      const token = await getTokenServer();
-      if (token) {
-        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, "") || "";
-        const res = await fetch(`${baseUrl}/users/me`, {
-          headers: { authorization: `Bearer ${token}` },
-          cache: "no-store",
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.plan) currentPlan = data.plan;
+  useEffect(() => {
+    if (!user || role === "admin") return;
+
+    let isMounted = true;
+    const fetchFreshPlan = async () => {
+      try {
+        const data = await getCurrentUserProfile();
+        if (isMounted && data?.plan) {
+          setCurrentPlan(data.plan);
         }
+      } catch {
+        // Fallback to session plan
       }
-    } catch {
-      // Fallback to session plan
-    }
+    };
+
+    fetchFreshPlan();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user, role]);
+
+  
+  if (isPending || !role) {
+    return (
+      <Sidebar className="border-r border-sidebar-border bg-sidebar">
+        <SidebarHeader className="border-b border-sidebar-border p-3.5 space-y-3">
+          {/* Logo Skeleton */}
+          <div className="flex items-center gap-2.5 px-1 pb-3 border-b border-sidebar-border">
+            <div className="h-8 w-8 rounded-lg bg-muted animate-pulse" />
+            <div className="space-y-1">
+              <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+              <div className="h-2 w-14 bg-muted animate-pulse rounded" />
+            </div>
+          </div>
+
+          {/* User Detail Box Skeleton */}
+          <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-sidebar-accent/50 border border-sidebar-border">
+            <div className="h-7 w-7 rounded-full bg-muted animate-pulse shrink-0" />
+            <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+              <div className="h-3 w-20 bg-muted animate-pulse rounded" />
+              <div className="h-2 w-28 bg-muted animate-pulse rounded" />
+            </div>
+            <div className="h-4 w-12 bg-muted animate-pulse rounded-full shrink-0" />
+          </div>
+        </SidebarHeader>
+
+        {/* Menu Items Skeleton */}
+        <SidebarContent className="py-4 px-3 space-y-2">
+          <div className="h-3 w-16 bg-muted animate-pulse rounded mb-3" />
+          <div className="h-8 w-full bg-muted/60 animate-pulse rounded-lg" />
+          <div className="h-8 w-full bg-muted/60 animate-pulse rounded-lg" />
+          <div className="h-8 w-full bg-muted/60 animate-pulse rounded-lg" />
+        </SidebarContent>
+      </Sidebar>
+    );
   }
 
+  const userName = user?.name || "User";
+  const userEmail = user?.email || "";
+  const firstLetter = userName.charAt(0).toUpperCase();
   const isPro = currentPlan.toLowerCase() === "pro";
 
   return (
@@ -107,7 +143,7 @@ export async function DashboardSidebar() {
         </div>
       </SidebarHeader>
 
-      {/* Role Navigation Menu with Active Pathname */}
+      {/* Role Navigation Menu */}
       <SidebarContent className="py-2">
         <DashboardMenu role={role} />
       </SidebarContent>

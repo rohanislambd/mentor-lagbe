@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-
 import React from "react";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
@@ -42,7 +41,7 @@ export default function DashboardLayout({
           </div>
         </header>
 
-        {/* Dashboard Main Content */}
+        {/* Dashboard Main Content (Next.js automatically renders loading.tsx here during transitions) */}
         <main className="flex-1 p-4 md:p-6 bg-background text-foreground">
           {children}
         </main>
