@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { updateTuitionApprovalStatus } from "@/lib/actions api/admin";
@@ -10,13 +9,14 @@ import { ApprovalStatus } from "../../../../teype/tuitiontype";
 interface TuitionApprovalActionsProps {
   tuitionId: string;
   currentStatus: ApprovalStatus;
+  onStatusUpdate?: (newStatus: "approved" | "rejected") => void;
 }
 
 export function TuitionApprovalActions({
   tuitionId,
   currentStatus,
+  onStatusUpdate,
 }: TuitionApprovalActionsProps) {
-  const router = useRouter();
   const [loadingStatus, setLoadingStatus] = useState<
     "approved" | "rejected" | null
   >(null);
@@ -46,7 +46,11 @@ export function TuitionApprovalActions({
             ? "Tuition approved successfully!"
             : "Tuition rejected successfully!")
       );
-      router.refresh();
+
+      // Instant optimistic state update without refreshing the page
+      if (onStatusUpdate) {
+        onStatusUpdate(newStatus);
+      }
     } catch (err: unknown) {
       const error = err as Error;
       toast.error(error?.message || "Error updating approval status");

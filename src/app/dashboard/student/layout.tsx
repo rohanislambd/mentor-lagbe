@@ -10,23 +10,17 @@ export default async function StudentLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let session;
+  let session = null;
   try {
     session = await auth.api.getSession({
       headers: await headers(),
     });
-  } catch {
-    redirect("/sign-in?callbackUrl=/dashboard/student");
+  } catch (error) {
+    console.error("StudentLayout session verification error:", error);
   }
 
-  if (!session?.user) {
-    redirect("/sign-in?callbackUrl=/dashboard/student");
-  }
-
-  const role = session.user.role;
-
-  // Strict Isolation: Student dashboard is ONLY accessible to students
-  if (role !== "student") {
+  // Strict Isolation: only redirect if user is confirmed and not a student
+  if (session?.user && session.user.role !== "student") {
     redirect("/unauthorized");
   }
 

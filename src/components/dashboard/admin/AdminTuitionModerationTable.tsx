@@ -25,24 +25,32 @@ interface AdminTuitionModerationTableProps {
 export function AdminTuitionModerationTable({
   initialTuitions,
 }: AdminTuitionModerationTableProps) {
+  const [tuitions, setTuitions] = useState<Tuition[]>(initialTuitions);
   const [activeTab, setActiveTab] = useState<"all" | ApprovalStatus>("all");
+
+  const handleStatusUpdate = (id: string, newStatus: ApprovalStatus) => {
+    setTuitions((prev) =>
+      prev.map((t) =>
+        (t._id || (t as any).id) === id
+          ? { ...t, approvalStatus: newStatus }
+          : t
+      )
+    );
+  };
 
   const counts = useMemo(() => {
     return {
-      all: initialTuitions.length,
-      pending: initialTuitions.filter((t) => t.approvalStatus === "pending")
-        .length,
-      approved: initialTuitions.filter((t) => t.approvalStatus === "approved")
-        .length,
-      rejected: initialTuitions.filter((t) => t.approvalStatus === "rejected")
-        .length,
+      all: tuitions.length,
+      pending: tuitions.filter((t) => t.approvalStatus === "pending").length,
+      approved: tuitions.filter((t) => t.approvalStatus === "approved").length,
+      rejected: tuitions.filter((t) => t.approvalStatus === "rejected").length,
     };
-  }, [initialTuitions]);
+  }, [tuitions]);
 
   const filteredTuitions = useMemo(() => {
-    if (activeTab === "all") return initialTuitions;
-    return initialTuitions.filter((t) => t.approvalStatus === activeTab);
-  }, [initialTuitions, activeTab]);
+    if (activeTab === "all") return tuitions;
+    return tuitions.filter((t) => t.approvalStatus === activeTab);
+  }, [tuitions, activeTab]);
 
   const renderApprovalBadge = (status: Tuition["approvalStatus"]) => {
     switch (status) {
@@ -291,6 +299,9 @@ export function AdminTuitionModerationTable({
                       <TuitionApprovalActions
                         tuitionId={tuitionId}
                         currentStatus={tuition.approvalStatus}
+                        onStatusUpdate={(newStatus) =>
+                          handleStatusUpdate(tuitionId, newStatus)
+                        }
                       />
                     </div>
                   </TableCell>

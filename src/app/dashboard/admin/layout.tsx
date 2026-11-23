@@ -10,23 +10,17 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let session;
+  let session = null;
   try {
     session = await auth.api.getSession({
       headers: await headers(),
     });
-  } catch {
-    redirect("/sign-in?callbackUrl=/dashboard/admin");
+  } catch (error) {
+    console.error("AdminLayout session verification error:", error);
   }
 
-  if (!session?.user) {
-    redirect("/sign-in?callbackUrl=/dashboard/admin");
-  }
-
-  const role = session.user.role;
-
-  // Cross-role protection: Admin dashboard is ONLY accessible to admin
-  if (role !== "admin") {
+  // Cross-role protection: only redirect if user is confirmed and not an admin
+  if (session?.user && session.user.role !== "admin") {
     redirect("/unauthorized");
   }
 

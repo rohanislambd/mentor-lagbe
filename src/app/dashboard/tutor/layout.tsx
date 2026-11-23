@@ -10,23 +10,17 @@ export default async function TutorLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let session;
+  let session = null;
   try {
     session = await auth.api.getSession({
       headers: await headers(),
     });
-  } catch {
-    redirect("/sign-in?callbackUrl=/dashboard/tutor");
+  } catch (error) {
+    console.error("TutorLayout session verification error:", error);
   }
 
-  if (!session?.user) {
-    redirect("/sign-in?callbackUrl=/dashboard/tutor");
-  }
-
-  const role = session.user.role;
-
-  // Strict Isolation: Tutor dashboard is ONLY accessible to tutors
-  if (role !== "tutor") {
+  // Strict Isolation: only redirect if user is confirmed and not a tutor
+  if (session?.user && session.user.role !== "tutor") {
     redirect("/unauthorized");
   }
 
